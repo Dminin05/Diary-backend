@@ -1,8 +1,8 @@
 services:
 
-  psql:
+  database:
 
-    container_name: database
+    container_name: database_diary
     image: postgres:latest
     ports:
       - "5432:5432"
