@@ -1,6 +1,6 @@
 package com.example.diarybackend.services.student;
 
-import com.example.diarybackend.controllers.identity.request.IdentityCreateRequest;
+import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class StudentService implements IStudentService{
     }
 
     @Override
-    public Student create(IdentityCreateRequest.StudentCreateRequest createRequest) {
+    public Student create(IdentityRegisterRequest.StudentCreateRequest createRequest) {
 
         Student student = new Student();
 

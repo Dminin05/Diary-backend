@@ -1,10 +1,8 @@
 package com.example.diarybackend.controllers.identity;
 
-import com.example.diarybackend.controllers.identity.request.IdentityCreateRequest;
 import com.example.diarybackend.models.Identity;
 import com.example.diarybackend.services.identity.IIdentityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,9 +25,9 @@ public class IdentityController {
         return identityService.findById(id).get();
     }
 
-    @PostMapping
-    public ResponseEntity<Identity> create(@RequestBody IdentityCreateRequest identity) {
-        return ResponseEntity.ok(identityService.create(identity));
-    }
+//    @PostMapping
+//    public ResponseEntity<Identity> create(@RequestBody IdentityCreateRequest identity) {
+//        return ResponseEntity.ok(identityService.create(identity));
+//    }
 
 }

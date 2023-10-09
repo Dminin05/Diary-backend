@@ -1,6 +1,6 @@
 package com.example.diarybackend.repositories;
 
-import com.example.diarybackend.models.Credentials;
+import com.example.diarybackend.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CredentialsRepository extends JpaRepository<Credentials, UUID> {
+public interface RoleRepository extends JpaRepository<Role, UUID> {
 
-    Optional<Credentials> findCredentialsByUsername(String username);
+    Optional<Role> findRoleByName(String name);
 
 }

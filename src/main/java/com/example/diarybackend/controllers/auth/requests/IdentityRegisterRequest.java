@@ -1,14 +1,14 @@
-package com.example.diarybackend.controllers.identity.request;
+package com.example.diarybackend.controllers.auth.requests;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = IdentityCreateRequest.StudentCreateRequest.class, name = "STUDENT"),
-        @JsonSubTypes.Type(value = IdentityCreateRequest.TeacherCreateRequest.class, name = "TEACHER"),
+        @JsonSubTypes.Type(value = IdentityRegisterRequest.StudentCreateRequest.class, name = "STUDENT"),
+        @JsonSubTypes.Type(value = IdentityRegisterRequest.TeacherCreateRequest.class, name = "TEACHER"),
 })
-public sealed interface IdentityCreateRequest permits IdentityCreateRequest.StudentCreateRequest, IdentityCreateRequest.TeacherCreateRequest {
+public sealed interface IdentityRegisterRequest permits IdentityRegisterRequest.StudentCreateRequest, IdentityRegisterRequest.TeacherCreateRequest {
 
     record StudentCreateRequest(
             String username,
@@ -17,7 +17,7 @@ public sealed interface IdentityCreateRequest permits IdentityCreateRequest.Stud
             String lastName,
             String patronymic,
             String email
-    ) implements IdentityCreateRequest {}
+    ) implements IdentityRegisterRequest {}
 
     record TeacherCreateRequest(
             String username,
@@ -26,7 +26,7 @@ public sealed interface IdentityCreateRequest permits IdentityCreateRequest.Stud
             String lastName,
             String patronymic,
             String email
-    ) implements IdentityCreateRequest {}
+    ) implements IdentityRegisterRequest {}
 
 }
 

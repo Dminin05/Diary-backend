@@ -1,6 +1,6 @@
 package com.example.diarybackend.services.teacher;
 
-import com.example.diarybackend.controllers.identity.request.IdentityCreateRequest;
+import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
 import com.example.diarybackend.models.Teacher;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface ITeacherService {
 
     Optional<Teacher> findById(UUID id);
 
-    Teacher create(IdentityCreateRequest.TeacherCreateRequest createRequest);
+    Teacher create(IdentityRegisterRequest.TeacherCreateRequest createRequest);
 
     Teacher update(Teacher admin);
 
