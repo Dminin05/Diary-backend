@@ -1,6 +1,5 @@
 package com.example.diarybackend.services.identity;
 
-import com.example.diarybackend.controllers.identity.request.IdentityCreateRequest;
 import com.example.diarybackend.models.Identity;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,7 @@ public interface IIdentityService {
 
     Optional<Identity> findById(UUID id);
 
-    Identity create(IdentityCreateRequest identityCreateRequest);
+    Identity save(Identity identity);
 
     Identity update(Identity identity);
 
