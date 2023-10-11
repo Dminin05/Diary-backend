@@ -17,5 +17,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   security:
-    access-secret:
-    life-time:
+    access-secret: ""
+    refresh-secret: ""
+    life-time: 30m
+    refresh-life-time: 1M

@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface ICredentialsService {
 
-    void create(String username, String password, String email, Identity identity);
+    Credentials create(String username, String password, String email, Identity identity);
 
     Optional<Credentials> findByUsername(String username);
 
