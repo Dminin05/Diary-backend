@@ -26,6 +26,12 @@ public class JwtTokenUtils {
     @Value("${spring.security.life-time}")
     private Duration lifeTime;
 
+    @Value("${spring.security.refresh-secret}")
+    private String refreshSecret;
+
+    @Value("${spring.security.refresh-life-time}")
+    private Duration refreshLifeTime;
+
     public String generateAccessToken(UserDetails userDetails) {
 
         Map<String, Object> claims = new HashMap<>();
@@ -47,8 +53,25 @@ public class JwtTokenUtils {
                 .compact();
     }
 
+    public String generateRefreshToken(UserDetails userDetails) {
+
+        Date issuedDate = new Date();
+        Date expiredDate = new Date(issuedDate.getTime() + refreshLifeTime.toMillis());
+
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(issuedDate)
+                .setExpiration(expiredDate)
+                .signWith(getRefreshSecret(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public String getUsername(String token) {
         return getAllClaimsFromAccessToken(token).getSubject();
+    }
+
+    public String getUsernameFromRefreshToken(String token) {
+        return getAllClaimsFromRefreshToken(token).getSubject();
     }
 
     public List<String> getRoles(String token) {
@@ -64,9 +87,21 @@ public class JwtTokenUtils {
                 .getBody();
     }
 
+    private Claims getAllClaimsFromRefreshToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getRefreshSecret())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
     private Key getAccessSecret() {
         byte[] keyBytes = Decoders.BASE64.decode(accessSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Key getRefreshSecret() {
+        byte[] keyBytes = Decoders.BASE64.decode(refreshSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

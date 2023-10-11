@@ -2,18 +2,16 @@ package com.example.diarybackend.controllers.auth;
 
 import com.example.diarybackend.controllers.auth.requests.AuthRequest;
 import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
-import com.example.diarybackend.controllers.auth.responses.AuthResponse;
-import com.example.diarybackend.exceptions.AppError;
+import com.example.diarybackend.controllers.auth.responses.TokenResponse;
 import com.example.diarybackend.services.auth.IAuthService;
-import com.example.diarybackend.utils.JwtTokenUtils;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,37 +19,47 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final IAuthService authService;
-    private final JwtTokenUtils jwtTokenUtils;
-    private final AuthenticationManager authenticationManager;
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody IdentityRegisterRequest identityRegisterRequest) {
-        return ResponseEntity.ok(authService.register(identityRegisterRequest));
+    public ResponseEntity<?> register(@RequestBody IdentityRegisterRequest identityRegisterRequest, HttpServletResponse httpResponse) {
+
+        TokenResponse result = authService.register(identityRegisterRequest);
+
+        Cookie cookie = new Cookie("refresh-token", result.getRefreshToken());
+        cookie.setHttpOnly(true);
+        httpResponse.addCookie(cookie);
+
+        return ResponseEntity.ok(result);
     }
 
-    @PostMapping("authorize")
-    public ResponseEntity<?> authorize(@RequestBody AuthRequest authRequest) {
+    @PostMapping("authenticate")
+    public ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest, HttpServletResponse httpResponse) throws Exception {
 
-        try {
+        TokenResponse result = authService.authenticate(authRequest);
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        Cookie cookie = new Cookie("refresh-token", result.getRefreshToken());
+        cookie.setHttpOnly(true);
+        httpResponse.addCookie(cookie);
 
-        } catch (BadCredentialsException e) {
+        return ResponseEntity.ok(result);
+    }
 
-            return new ResponseEntity<>(
-                    new AppError(
-                            HttpStatus.UNAUTHORIZED.value(),
-                            "wrong_login_or_password"
-                    ),
-                    HttpStatus.UNAUTHORIZED
-            );
+    @PostMapping("refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
-        }
+        String token = Arrays.stream(httpRequest.getCookies())
+                .filter(c -> c.getName().equals("refresh-token"))
+                .findFirst()
+                .orElseThrow() // TODO exception handler
+                .getValue();
 
-        UserDetails userDetails = authService.loadUserByUsername(authRequest.getUsername());
-        String token = jwtTokenUtils.generateAccessToken(userDetails);
+        TokenResponse result = authService.refreshToken(token);
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        Cookie cookie = new Cookie("refresh-token", result.getRefreshToken());
+        cookie.setHttpOnly(true);
+        httpResponse.addCookie(cookie);
+
+        return ResponseEntity.ok(result);
     }
 
 }

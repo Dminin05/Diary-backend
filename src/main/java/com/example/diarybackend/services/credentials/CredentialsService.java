@@ -20,7 +20,7 @@ public class CredentialsService implements ICredentialsService {
     private final IRoleService roleService;
 
     @Override
-    public void create(String username, String password, String email, Identity identity) {
+    public Credentials create(String username, String password, String email, Identity identity) {
 
         Credentials credentials = new Credentials();
 
@@ -51,7 +51,7 @@ public class CredentialsService implements ICredentialsService {
         credentials.setEmailVerified(false);
         credentials.setRoles(roles);
 
-        credentialsRepository.save(credentials);
+        return credentialsRepository.save(credentials);
     }
 
     @Override
