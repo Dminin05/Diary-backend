@@ -1,12 +1,12 @@
 package com.example.diarybackend.services.identity;
 
+import com.example.diarybackend.exceptions.ResourceNotFoundException;
 import com.example.diarybackend.models.Identity;
 import com.example.diarybackend.repositories.IdentityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,8 +21,9 @@ public class IdentityService implements IIdentityService {
     }
 
     @Override
-    public Optional<Identity> findById(UUID id) {
-        return identityRepository.findById(id);
+    public Identity findById(UUID id) {
+        return identityRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("identity_with_id_'%s'_not_found", id)));
     }
 
     @Override

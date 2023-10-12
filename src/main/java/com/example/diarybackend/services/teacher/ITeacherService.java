@@ -4,14 +4,13 @@ import com.example.diarybackend.controllers.auth.requests.IdentityRegisterReques
 import com.example.diarybackend.models.Teacher;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface ITeacherService {
 
     List<Teacher> findAll();
 
-    Optional<Teacher> findById(UUID id);
+    Teacher findById(UUID id);
 
     Teacher create(IdentityRegisterRequest.TeacherCreateRequest createRequest);
 

@@ -5,12 +5,11 @@ import com.example.diarybackend.models.Group;
 import com.example.diarybackend.models.Student;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface IGroupService {
 
-    Optional<Group> findById(UUID id);
+    Group findById(UUID id);
 
     Group create(GroupCreateRequest groupCreateRequest);
 

@@ -1,13 +1,13 @@
 package com.example.diarybackend.services.teacher;
 
 import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.example.diarybackend.exceptions.ResourceNotFoundException;
 import com.example.diarybackend.models.Teacher;
 import com.example.diarybackend.repositories.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,8 +22,9 @@ public class TeacherService implements ITeacherService{
     }
 
     @Override
-    public Optional<Teacher> findById(UUID id) {
-        return teacherRepository.findById(id);
+    public Teacher findById(UUID id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("teacher_with_id_'%s'_not_found", id)));
     }
 
     @Override

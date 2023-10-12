@@ -1,6 +1,9 @@
 package com.example.diarybackend.services.student;
 
 import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.example.diarybackend.dtos.StudentDto;
+import com.example.diarybackend.exceptions.ResourceNotFoundException;
+import com.example.diarybackend.mappers.BaseStudentMapper;
 import com.example.diarybackend.models.Group;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.repositories.StudentRepository;
@@ -9,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -18,6 +20,7 @@ public class StudentService implements IStudentService{
 
     private final StudentRepository studentRepository;
     private final IGroupService groupService;
+    private final BaseStudentMapper baseStudentMapper;
 
     @Override
     public List<Student> findAll() {
@@ -25,15 +28,21 @@ public class StudentService implements IStudentService{
     }
 
     @Override
-    public Optional<Student> findById(UUID id) {
-        return studentRepository.findById(id);
+    public StudentDto findById(UUID id) {
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("student_with_id_'%s'_not_found", id)));
+
+        System.out.println(student.getFirstName());
+
+        return baseStudentMapper.entityToDto(student);
+
     }
 
     @Override
     public Student create(IdentityRegisterRequest.StudentCreateRequest createRequest) {
 
-        Group group = groupService.findById(createRequest.groupId())
-                .orElseThrow(); // TODO exception handler
+        Group group = groupService.findById(createRequest.groupId());
 
         Student student = new Student();
 
