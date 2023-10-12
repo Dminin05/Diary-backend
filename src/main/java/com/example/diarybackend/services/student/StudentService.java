@@ -1,6 +1,6 @@
 package com.example.diarybackend.services.student;
 
-import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.example.diarybackend.controllers.auth.requests.StudentRegisterRequest;
 import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
 import com.example.diarybackend.mappers.BaseStudentMapper;
@@ -40,15 +40,15 @@ public class StudentService implements IStudentService{
     }
 
     @Override
-    public Student create(IdentityRegisterRequest.StudentCreateRequest createRequest) {
+    public Student create(StudentRegisterRequest createRequest) {
 
-        Group group = groupService.findById(createRequest.groupId());
+        Group group = groupService.findById(createRequest.getGroupId());
 
         Student student = new Student();
 
-        student.setFirstName(createRequest.firstName());
-        student.setLastName(createRequest.lastName());
-        student.setPatronymic(createRequest.patronymic());
+        student.setFirstName(createRequest.getFirstName());
+        student.setLastName(createRequest.getLastName());
+        student.setPatronymic(createRequest.getPatronymic());
         student.setGroup(group);
 
         return studentRepository.save(student);

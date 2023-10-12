@@ -11,4 +11,8 @@ public interface ICredentialsService {
 
     Credentials findByUsername(String username);
 
+    boolean isCredentialsExistsByUsername(String username);
+
+    boolean isCredentialsExistsByEmail(String email);
+
 }

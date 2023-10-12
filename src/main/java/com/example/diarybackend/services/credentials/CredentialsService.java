@@ -56,4 +56,14 @@ public class CredentialsService implements ICredentialsService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("credentials_with_username_'%s'_not_found", username)));
     }
 
+    @Override
+    public boolean isCredentialsExistsByUsername(String username) {
+        return credentialsRepository.existsCredentialsByUsername(username);
+    }
+
+    @Override
+    public boolean isCredentialsExistsByEmail(String email) {
+        return credentialsRepository.existsCredentialsByEmail(email);
+    }
+
 }

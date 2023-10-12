@@ -24,4 +24,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<AppError> handleBadRequestException(BadRequestException ex) {
+        return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -2,34 +2,25 @@ package com.example.diarybackend.controllers.auth.requests;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = IdentityRegisterRequest.StudentCreateRequest.class, name = "STUDENT"),
-        @JsonSubTypes.Type(value = IdentityRegisterRequest.TeacherCreateRequest.class, name = "TEACHER"),
+        @JsonSubTypes.Type(value = StudentRegisterRequest.class, name = "STUDENT"),
+        @JsonSubTypes.Type(value = TeacherRegisterRequest.class, name = "TEACHER"),
 })
-public sealed interface IdentityRegisterRequest permits IdentityRegisterRequest.StudentCreateRequest, IdentityRegisterRequest.TeacherCreateRequest {
+@Data
+@AllArgsConstructor
+public sealed class IdentityRegisterRequest permits StudentRegisterRequest, TeacherRegisterRequest {
 
-    record StudentCreateRequest(
-            String username,
-            String password,
-            String firstName,
-            String lastName,
-            String patronymic,
-            String email,
-            UUID groupId
-    ) implements IdentityRegisterRequest {}
-
-    record TeacherCreateRequest(
-            String username,
-            String password,
-            String firstName,
-            String lastName,
-            String patronymic,
-            String email
-    ) implements IdentityRegisterRequest {}
+    private String username;
+    private String password;
+    private String confirmPassword;
+    private String firstName;
+    private String lastName;
+    private String patronymic;
+    private String email;
 
 }
 
