@@ -36,7 +36,6 @@ public class StudentService implements IStudentService{
         System.out.println(student.getFirstName());
 
         return baseStudentMapper.entityToDto(student);
-
     }
 
     @Override
