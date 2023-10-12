@@ -1,16 +1,3 @@
-create table student
-(
-    id         uuid default gen_random_uuid() not null
-        constraint student_pk
-            primary key,
-    first_name varchar                        not null,
-    last_name  varchar                        not null,
-    patronymic varchar
-);
-
-alter table student
-    owner to postgres;
-
 create table teacher
 (
     id         uuid default gen_random_uuid() not null
@@ -35,6 +22,56 @@ create table admin
 );
 
 alter table admin
+    owner to postgres;
+
+create table role
+(
+    id   uuid default gen_random_uuid() not null
+        primary key,
+    name varchar                        not null
+);
+
+alter table role
+    owner to postgres;
+
+create table token
+(
+    id       uuid default gen_random_uuid() not null
+        constraint token_pk
+            primary key,
+    username varchar                        not null,
+    value    varchar                        not null
+);
+
+alter table token
+    owner to postgres;
+
+create table groups
+(
+    id    uuid default gen_random_uuid() not null
+        constraint group_pkey
+            primary key,
+    title varchar                        not null,
+    year  integer                        not null
+);
+
+alter table groups
+    owner to postgres;
+
+create table student
+(
+    id         uuid default gen_random_uuid() not null
+        constraint student_pk
+            primary key,
+    first_name varchar                        not null,
+    last_name  varchar                        not null,
+    patronymic varchar,
+    group_id   uuid                           not null
+        constraint group_fk
+            references groups
+);
+
+alter table student
     owner to postgres;
 
 create table identity
@@ -80,16 +117,6 @@ create table credentials
 alter table credentials
     owner to postgres;
 
-create table role
-(
-    id   uuid default gen_random_uuid() not null
-        primary key,
-    name varchar                        not null
-);
-
-alter table role
-    owner to postgres;
-
 create table credentials_roles
 (
     id             uuid default gen_random_uuid() not null
@@ -108,15 +135,15 @@ create table credentials_roles
 alter table credentials_roles
     owner to postgres;
 
-create table token
-(
-    id       uuid default gen_random_uuid() not null
-        constraint token_pk
-            primary key,
-    username varchar                        not null,
-    value    varchar                        not null
-);
 
-alter table token
-    owner to postgres;
+
+INSERT INTO public.role (id, name) VALUES ('756ad1c2-5948-452b-b243-ea97cb73435b', 'ROLE_STUDENT');
+INSERT INTO public.role (id, name) VALUES ('22252d63-8432-4bec-9627-1a956d02da32', 'ROLE_TEACHER');
+INSERT INTO public.role (id, name) VALUES ('b27fa679-567a-453e-9148-a532a4684d4c', 'ROLE_ADMIN');
+INSERT INTO public.role (id, name) VALUES ('d1cc4164-e948-4170-ac7e-d5fbe912363d', 'ROLE_METHODIST');
+
+INSERT INTO public.admin (id, first_name, last_name, patronymic) VALUES ('1f0f85f6-1fc9-448d-8c71-4d6e836d6d4f', 'admin', 'admin', 'admin');
+INSERT INTO public.identity (id, type, student_id, teacher_id, admin_id) VALUES ('bfc1a222-2825-4765-a597-c20bc37a5256', 'ADMIN', null, null, '1f0f85f6-1fc9-448d-8c71-4d6e836d6d4f');
+INSERT INTO public.credentials (id, identity_id, username, password, email, is_email_verified, created_at, updated_at) VALUES ('abf4e988-74e9-4f05-af11-f315056b25c8', 'bfc1a222-2825-4765-a597-c20bc37a5256', 'admin', '$2a$12$VCaAwdGOSAPi3pZbQ5hGk.jRnIt8O4Xx0UlK2IGei12awxK.jYZUi', 'admin@g,ail.com', false, '2023-10-11 21:46:04.000000', '2023-10-11 21:46:08.000000');
+INSERT INTO public.credentials_roles (id, credentials_id, role_id) VALUES ('203272ea-2b28-4aa5-ad3d-375d16e709c7', 'abf4e988-74e9-4f05-af11-f315056b25c8', 'b27fa679-567a-453e-9148-a532a4684d4c');
 

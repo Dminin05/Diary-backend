@@ -3,6 +3,8 @@ package com.example.diarybackend.controllers.auth.requests;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.util.UUID;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = IdentityRegisterRequest.StudentCreateRequest.class, name = "STUDENT"),
@@ -16,7 +18,8 @@ public sealed interface IdentityRegisterRequest permits IdentityRegisterRequest.
             String firstName,
             String lastName,
             String patronymic,
-            String email
+            String email,
+            UUID groupId
     ) implements IdentityRegisterRequest {}
 
     record TeacherCreateRequest(
