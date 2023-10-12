@@ -1,6 +1,6 @@
 package com.example.diarybackend.services.student;
 
-import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.example.diarybackend.controllers.auth.requests.StudentRegisterRequest;
 import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.models.Student;
 
@@ -13,7 +13,7 @@ public interface IStudentService {
 
     StudentDto findById(UUID id);
 
-    Student create(IdentityRegisterRequest.StudentCreateRequest createRequest);
+    Student create(StudentRegisterRequest createRequest);
 
     Student update(Student admin);
 

@@ -9,7 +9,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody IdentityRegisterRequest identityRegisterRequest, HttpServletResponse httpResponse) {
+    public TokenResponse register(@RequestBody IdentityRegisterRequest identityRegisterRequest, HttpServletResponse httpResponse) {
 
         TokenResponse result = authService.register(identityRegisterRequest);
 
@@ -33,11 +32,11 @@ public class AuthController {
         cookie.setHttpOnly(true);
         httpResponse.addCookie(cookie);
 
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     @PostMapping("authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest, HttpServletResponse httpResponse) throws Exception {
+    public TokenResponse authenticate(@RequestBody AuthRequest authRequest, HttpServletResponse httpResponse) throws Exception {
 
         TokenResponse result = authService.authenticate(authRequest);
 
@@ -45,11 +44,11 @@ public class AuthController {
         cookie.setHttpOnly(true);
         httpResponse.addCookie(cookie);
 
-        return ResponseEntity.ok(result);
+        return result;
     }
 
     @PostMapping("refresh")
-    public ResponseEntity<?> refresh(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public TokenResponse refresh(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
         String token = Arrays.stream(httpRequest.getCookies())
                 .filter(c -> c.getName().equals("refresh-token"))
@@ -63,7 +62,7 @@ public class AuthController {
         cookie.setHttpOnly(true);
         httpResponse.addCookie(cookie);
 
-        return ResponseEntity.ok(result);
+        return result;
     }
 
 }

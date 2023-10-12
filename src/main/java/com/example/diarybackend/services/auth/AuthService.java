@@ -2,8 +2,11 @@ package com.example.diarybackend.services.auth;
 
 import com.example.diarybackend.controllers.auth.requests.AuthRequest;
 import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.example.diarybackend.controllers.auth.requests.StudentRegisterRequest;
+import com.example.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
 import com.example.diarybackend.controllers.auth.responses.TokenResponse;
 import com.example.diarybackend.exceptions.AuthenticationException;
+import com.example.diarybackend.exceptions.BadRequestException;
 import com.example.diarybackend.models.*;
 import com.example.diarybackend.models.types.IdentityType;
 import com.example.diarybackend.repositories.TokenRepository;
@@ -56,10 +59,22 @@ public class AuthService implements IAuthService {
         Identity identity = new Identity();
         String username = "";
 
-        switch (identityCreateRequest) {
-            case IdentityRegisterRequest.StudentCreateRequest obj -> {
+        if (credentialsService.isCredentialsExistsByUsername(identityCreateRequest.getUsername())) {
+            throw new BadRequestException("this_username_already_exists");
+        }
 
-                String password = passwordEncoder.encode(obj.password());
+        if (credentialsService.isCredentialsExistsByEmail(identityCreateRequest.getEmail())) {
+            throw new BadRequestException("this_email_already_exists");
+        }
+
+        if (!identityCreateRequest.getPassword().equals(identityCreateRequest.getConfirmPassword())) {
+            throw new BadRequestException("passwords_mismatch");
+        }
+
+        switch (identityCreateRequest) {
+            case StudentRegisterRequest obj -> {
+
+                String password = passwordEncoder.encode(obj.getPassword());
 
                 Student student = studentService.create(obj);
 
@@ -67,13 +82,13 @@ public class AuthService implements IAuthService {
                 identity.setType(IdentityType.STUDENT);
                 identityService.save(identity);
 
-                Credentials credentials = credentialsService.create(obj.username(), password, obj.email(), identity);
+                Credentials credentials = credentialsService.create(obj.getUsername(), password, obj.getEmail(), identity);
                 username = credentials.getUsername();
 
             }
-            case IdentityRegisterRequest.TeacherCreateRequest obj -> {
+            case TeacherRegisterRequest obj -> {
 
-                String password = passwordEncoder.encode(obj.password());
+                String password = passwordEncoder.encode(obj.getPassword());
 
                 Teacher teacher = teacherService.create(obj);
 
@@ -81,7 +96,7 @@ public class AuthService implements IAuthService {
                 identity.setType(IdentityType.TEACHER);
                 identityService.save(identity);
 
-                Credentials credentials = credentialsService.create(obj.username(), password, obj.email(), identity);
+                Credentials credentials = credentialsService.create(obj.getUsername(), password, obj.getEmail(), identity);
                 username = credentials.getUsername();
 
             }

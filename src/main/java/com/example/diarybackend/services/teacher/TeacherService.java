@@ -1,6 +1,6 @@
 package com.example.diarybackend.services.teacher;
 
-import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.example.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
 import com.example.diarybackend.models.Teacher;
 import com.example.diarybackend.repositories.TeacherRepository;
@@ -28,13 +28,13 @@ public class TeacherService implements ITeacherService{
     }
 
     @Override
-    public Teacher create(IdentityRegisterRequest.TeacherCreateRequest createRequest) {
+    public Teacher create(TeacherRegisterRequest createRequest) {
 
         Teacher teacher = new Teacher();
 
-        teacher.setFirstName(createRequest.firstName());
-        teacher.setLastName(createRequest.lastName());
-        teacher.setPatronymic(createRequest.patronymic());
+        teacher.setFirstName(createRequest.getFirstName());
+        teacher.setLastName(createRequest.getLastName());
+        teacher.setPatronymic(createRequest.getPatronymic());
 
         return teacherRepository.save(teacher);
     }
