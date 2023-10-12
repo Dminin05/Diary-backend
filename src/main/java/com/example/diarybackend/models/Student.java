@@ -26,4 +26,8 @@ public class Student {
     @Column(name = "patronymic")
     private String patronymic;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    private Group group;
+
 }
