@@ -3,6 +3,7 @@ package com.example.diarybackend.services.auth;
 import com.example.diarybackend.controllers.auth.requests.AuthRequest;
 import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
 import com.example.diarybackend.controllers.auth.responses.TokenResponse;
+import com.example.diarybackend.exceptions.AuthenticationException;
 import com.example.diarybackend.models.*;
 import com.example.diarybackend.models.types.IdentityType;
 import com.example.diarybackend.repositories.TokenRepository;
@@ -102,11 +103,9 @@ public class AuthService implements IAuthService {
     public TokenResponse authenticate(AuthRequest authRequest) {
 
         try {
-
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-
         } catch (BadCredentialsException e) {
-            throw new RuntimeException(); // TODO
+            throw new AuthenticationException("wrong_login_or_password");
         }
 
         UserDetails userDetails = loadUserByUsername(authRequest.getUsername());
@@ -155,8 +154,7 @@ public class AuthService implements IAuthService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Credentials credentials = credentialsService.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("user_not_found"));
+        Credentials credentials = credentialsService.findByUsername(username);
 
         return new User(
                 credentials.getUsername(),

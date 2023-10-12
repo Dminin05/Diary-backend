@@ -1,5 +1,6 @@
 package com.example.diarybackend.services.credentials;
 
+import com.example.diarybackend.exceptions.ResourceNotFoundException;
 import com.example.diarybackend.models.Credentials;
 import com.example.diarybackend.models.Identity;
 import com.example.diarybackend.models.Role;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,23 +23,19 @@ public class CredentialsService implements ICredentialsService {
     public Credentials create(String username, String password, String email, Identity identity) {
 
         Credentials credentials = new Credentials();
-
         List<Role> roles = new ArrayList<>();
 
         switch (identity.getType()) {
             case ADMIN -> {
-                Role role = roleService.findRoleByName("ROLE_ADMIN")
-                        .orElseThrow(); // TODO
+                Role role = roleService.findRoleByName("ROLE_ADMIN");
                 roles.add(role);
             }
             case STUDENT -> {
-                Role role = roleService.findRoleByName("ROLE_STUDENT")
-                        .orElseThrow(); // TODO
+                Role role = roleService.findRoleByName("ROLE_STUDENT");
                 roles.add(role);
             }
             case TEACHER -> {
-                Role role = roleService.findRoleByName("ROLE_TEACHER")
-                        .orElseThrow(); // TODO
+                Role role = roleService.findRoleByName("ROLE_TEACHER");
                 roles.add(role);
             }
         }
@@ -55,8 +51,9 @@ public class CredentialsService implements ICredentialsService {
     }
 
     @Override
-    public Optional<Credentials> findByUsername(String username) {
-        return credentialsRepository.findCredentialsByUsername(username);
+    public Credentials findByUsername(String username) {
+        return credentialsRepository.findCredentialsByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("credentials_with_username_'%s'_not_found", username)));
     }
 
 }

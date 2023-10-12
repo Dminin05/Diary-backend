@@ -22,7 +22,7 @@ public class TeacherController {
 
     @GetMapping("{id}")
     public Teacher findById(@PathVariable UUID id) {
-        return teacherService.findById(id).get();
+        return teacherService.findById(id);
     }
 
     @DeleteMapping("{id}")

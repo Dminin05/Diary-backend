@@ -3,13 +3,17 @@ package com.example.diarybackend.controllers.auth;
 import com.example.diarybackend.controllers.auth.requests.AuthRequest;
 import com.example.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
 import com.example.diarybackend.controllers.auth.responses.TokenResponse;
+import com.example.diarybackend.exceptions.AuthenticationException;
 import com.example.diarybackend.services.auth.IAuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
@@ -50,7 +54,7 @@ public class AuthController {
         String token = Arrays.stream(httpRequest.getCookies())
                 .filter(c -> c.getName().equals("refresh-token"))
                 .findFirst()
-                .orElseThrow() // TODO exception handler
+                .orElseThrow(() -> new AuthenticationException("refresh_token_is_not_present"))
                 .getValue();
 
         TokenResponse result = authService.refreshToken(token);
