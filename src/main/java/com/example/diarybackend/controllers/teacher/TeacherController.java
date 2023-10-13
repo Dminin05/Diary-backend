@@ -30,4 +30,14 @@ public class TeacherController {
         teacherService.deleteById(id);
     }
 
+    @PostMapping("{teacherId}/group/{groupId}")
+    public void addGroupToTeacher(@PathVariable UUID teacherId, @PathVariable UUID groupId) {
+        teacherService.addGroupToTeacher(teacherId, groupId);
+    }
+
+    @PostMapping("{teacherId}/subject/{subjectId}")
+    public void addSubjectToTeacher(@PathVariable UUID teacherId, @PathVariable UUID subjectId) {
+        teacherService.addSubjectToTeacher(teacherId, subjectId);
+    }
+
 }

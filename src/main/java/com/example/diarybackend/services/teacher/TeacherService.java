@@ -2,8 +2,12 @@ package com.example.diarybackend.services.teacher;
 
 import com.example.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
+import com.example.diarybackend.models.Group;
+import com.example.diarybackend.models.Subject;
 import com.example.diarybackend.models.Teacher;
 import com.example.diarybackend.repositories.TeacherRepository;
+import com.example.diarybackend.services.group.IGroupService;
+import com.example.diarybackend.services.subjects.ISubjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,8 @@ import java.util.UUID;
 public class TeacherService implements ITeacherService{
 
     private final TeacherRepository teacherRepository;
+    private final IGroupService groupService;
+    private final ISubjectsService subjectsService;
 
     @Override
     public List<Teacher> findAll() {
@@ -47,6 +53,28 @@ public class TeacherService implements ITeacherService{
     @Override
     public void deleteById(UUID id) {
         teacherRepository.deleteById(id);
+    }
+
+    @Override
+    public void addGroupToTeacher(UUID teacherId, UUID groupId) {
+
+        Group group = groupService.findById(groupId);
+        Teacher teacher = findById(teacherId);
+
+        teacher.getGroups().add(group);
+
+        teacherRepository.save(teacher); // TODO method update in service
+    }
+
+    @Override
+    public void addSubjectToTeacher(UUID teacherId, UUID subjectId) {
+
+        Subject subject = subjectsService.findById(subjectId);
+        Teacher teacher = findById(teacherId);
+
+        teacher.getSubjects().add(subject);
+
+        teacherRepository.save(teacher); // TODO method update in service
     }
 
 }

@@ -18,4 +18,8 @@ public interface ITeacherService {
 
     void deleteById(UUID id);
 
+    void addGroupToTeacher(UUID teacherId, UUID groupId);
+
+    void addSubjectToTeacher(UUID teacherId, UUID subjectId);
+
 }
