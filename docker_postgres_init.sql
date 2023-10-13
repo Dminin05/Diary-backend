@@ -135,6 +135,53 @@ create table credentials_roles
 alter table credentials_roles
     owner to postgres;
 
+create table subjects
+(
+    id    uuid default gen_random_uuid() not null
+        constraint subjects_pk
+            primary key,
+    title varchar                        not null
+);
+
+alter table subjects
+    owner to postgres;
+
+create table teachers_groups
+(
+    id         uuid default gen_random_uuid() not null
+        primary key,
+    teacher_id uuid                           not null
+        constraint teacher_fk
+            references teacher
+            on update cascade on delete cascade,
+    group_id   uuid                           not null
+        constraint group_fk
+            references groups
+            on update cascade on delete cascade
+);
+
+alter table teachers_groups
+    owner to postgres;
+
+create table teachers_subjects
+(
+    id         uuid default gen_random_uuid() not null
+        primary key,
+    teacher_id uuid                           not null
+        constraint teacher_fk
+            references teacher
+            on update cascade on delete cascade,
+    subject_id uuid                           not null
+        constraint subject_fk
+            references subjects
+            on update cascade on delete cascade
+);
+
+alter table teachers_subjects
+    owner to postgres;
+
+
+
 
 
 INSERT INTO public.role (id, name) VALUES ('756ad1c2-5948-452b-b243-ea97cb73435b', 'ROLE_STUDENT');
