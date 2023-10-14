@@ -180,6 +180,25 @@ create table teachers_subjects
 alter table teachers_subjects
     owner to postgres;
 
+create table messages
+(
+    id          uuid default gen_random_uuid() not null
+        primary key,
+    sender_id   uuid                           not null
+        constraint sender_fk
+            references identity,
+    receiver_id uuid                           not null
+        constraint receiver_fk
+            references identity,
+    title       varchar                        not null,
+    message     varchar                        not null
+);
+
+alter table messages
+    owner to postgres;
+
+
+
 
 
 
