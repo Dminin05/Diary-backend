@@ -3,7 +3,7 @@ package com.example.diarybackend.services.student;
 import com.example.diarybackend.controllers.auth.requests.StudentRegisterRequest;
 import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
-import com.example.diarybackend.mappers.BaseStudentMapper;
+import com.example.diarybackend.mappers.StudentMapper;
 import com.example.diarybackend.models.Group;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.repositories.StudentRepository;
@@ -20,7 +20,7 @@ public class StudentService implements IStudentService{
 
     private final StudentRepository studentRepository;
     private final IGroupService groupService;
-    private final BaseStudentMapper baseStudentMapper;
+    private final StudentMapper baseStudentMapper;
 
     @Override
     public List<Student> findAll() {
