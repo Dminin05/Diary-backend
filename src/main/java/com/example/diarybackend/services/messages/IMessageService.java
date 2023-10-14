@@ -13,8 +13,8 @@ public interface IMessageService {
 
     Message create(MessageRequest messageRequest);
 
-    List<MessageDto> findReceivedMessages(UUID identityId);
+    List<MessageDto> findReceivedMessages(UUID identityId, int pageIndex, int pageSize);
 
-    List<MessageDto> findSentMessages(UUID identityId);
+    List<MessageDto> findSentMessages(UUID identityId, int pageIndex, int pageSize);
 
 }

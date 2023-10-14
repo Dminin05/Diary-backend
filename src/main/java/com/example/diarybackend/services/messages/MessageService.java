@@ -8,11 +8,12 @@ import com.example.diarybackend.models.Message;
 import com.example.diarybackend.repositories.MessageRepository;
 import com.example.diarybackend.services.credentials.ICredentialsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +37,12 @@ public class MessageService implements IMessageService{
     }
 
     @Override
-    public List<MessageDto> findReceivedMessages(UUID identityId) {
+    public List<MessageDto> findReceivedMessages(UUID identityId, int pageIndex, int pageSize) {
 
         Credentials senderCredentials = credentialsService.findByIdentityId(identityId);
         String senderUsername = senderCredentials.getUsername();
 
-        List<Message> messages = messageRepository.findMessagesByReceiverId(identityId);
+        Page<Message> messages = messageRepository.findMessagesByReceiverId(identityId, PageRequest.of(pageIndex, pageSize));
 
         return messages.stream()
                 .map(message -> {
@@ -53,12 +54,12 @@ public class MessageService implements IMessageService{
     }
 
     @Override
-    public List<MessageDto> findSentMessages(UUID identityId) {
+    public List<MessageDto> findSentMessages(UUID identityId, int pageIndex, int pageSize) {
 
         Credentials senderCredentials = credentialsService.findByIdentityId(identityId);
         String senderUsername = senderCredentials.getUsername();
 
-        List<Message> messages = messageRepository.findMessagesBySenderId(identityId);
+        Page<Message> messages = messageRepository.findMessagesBySenderId(identityId, PageRequest.of(pageIndex, pageSize));
 
         return messages.stream()
                 .map(message -> {
