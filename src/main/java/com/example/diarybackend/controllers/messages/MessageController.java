@@ -18,13 +18,13 @@ public class MessageController {
     private final IMessageService messageService;
 
     @GetMapping("sent")
-    public List<MessageDto> findSentMessages(CustomPrincipal principal) {
-        return messageService.findSentMessages(principal.getIdentityId());
+    public List<MessageDto> findSentMessages(CustomPrincipal principal, @RequestParam(defaultValue = "1", name = "p") int pageIndex) {
+        return messageService.findSentMessages(principal.getIdentityId(), pageIndex - 1, 20);
     }
 
     @GetMapping("received")
-    public List<MessageDto> findReceivedMessages(CustomPrincipal principal) {
-        return messageService.findReceivedMessages(principal.getIdentityId());
+    public List<MessageDto> findReceivedMessages(CustomPrincipal principal, @RequestParam(defaultValue = "1", name = "p") int pageIndex) {
+        return messageService.findReceivedMessages(principal.getIdentityId(), pageIndex - 1, 20);
     }
 
     @PostMapping("new")
