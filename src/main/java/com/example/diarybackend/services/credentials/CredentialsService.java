@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +55,12 @@ public class CredentialsService implements ICredentialsService {
     public Credentials findByUsername(String username) {
         return credentialsRepository.findCredentialsByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("credentials_with_username_'%s'_not_found", username)));
+    }
+
+    @Override
+    public Credentials findByIdentityId(UUID identityId) {
+        return credentialsRepository.findCredentialsByIdentity_Id(identityId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("credentials_with_identity_id_'%s'_not_found", identityId)));
     }
 
     @Override
