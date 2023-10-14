@@ -29,4 +29,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<AppError> handleAlreadyExistsException(AlreadyExistsException ex) {
+        return new ResponseEntity<>(new AppError(HttpStatus.CONFLICT.value(), ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
 }

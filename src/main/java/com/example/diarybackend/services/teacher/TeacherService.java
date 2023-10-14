@@ -1,6 +1,7 @@
 package com.example.diarybackend.services.teacher;
 
 import com.example.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
+import com.example.diarybackend.exceptions.AlreadyExistsException;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
 import com.example.diarybackend.models.Group;
 import com.example.diarybackend.models.Subject;
@@ -61,6 +62,10 @@ public class TeacherService implements ITeacherService{
         Group group = groupService.findById(groupId);
         Teacher teacher = findById(teacherId);
 
+        if (teacher.getGroups().contains(group)) {
+            throw new AlreadyExistsException("group_is_already_linked");
+        }
+
         teacher.getGroups().add(group);
 
         teacherRepository.save(teacher); // TODO method update in service
@@ -71,6 +76,10 @@ public class TeacherService implements ITeacherService{
 
         Subject subject = subjectsService.findById(subjectId);
         Teacher teacher = findById(teacherId);
+
+        if (teacher.getSubjects().contains(subject)) {
+            throw new AlreadyExistsException("subject_is_already_linked");
+        }
 
         teacher.getSubjects().add(subject);
 
