@@ -22,4 +22,6 @@ public interface ITeacherService {
 
     void addSubjectToTeacher(UUID teacherId, UUID subjectId);
 
+    void addRoleMethodist(UUID identityId);
+
 }

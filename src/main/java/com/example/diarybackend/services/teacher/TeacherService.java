@@ -2,12 +2,15 @@ package com.example.diarybackend.services.teacher;
 
 import com.example.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
 import com.example.diarybackend.exceptions.AlreadyExistsException;
+import com.example.diarybackend.exceptions.BadRequestException;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
-import com.example.diarybackend.models.Group;
-import com.example.diarybackend.models.Subject;
-import com.example.diarybackend.models.Teacher;
+import com.example.diarybackend.models.*;
+import com.example.diarybackend.models.types.IdentityType;
 import com.example.diarybackend.repositories.TeacherRepository;
+import com.example.diarybackend.services.credentials.ICredentialsService;
 import com.example.diarybackend.services.group.IGroupService;
+import com.example.diarybackend.services.identity.IIdentityService;
+import com.example.diarybackend.services.role.IRoleService;
 import com.example.diarybackend.services.subjects.ISubjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +23,13 @@ import java.util.UUID;
 public class TeacherService implements ITeacherService{
 
     private final TeacherRepository teacherRepository;
+
     private final IGroupService groupService;
     private final ISubjectsService subjectsService;
+
+    private final ICredentialsService credentialsService;
+    private final IIdentityService identityService;
+    private final IRoleService roleService;
 
     @Override
     public List<Teacher> findAll() {
@@ -84,6 +92,25 @@ public class TeacherService implements ITeacherService{
         teacher.getSubjects().add(subject);
 
         teacherRepository.save(teacher); // TODO method update in service
+    }
+
+    @Override
+    public void addRoleMethodist(UUID identityId) {
+
+        Identity identity = identityService.findById(identityId);
+
+        if (!identity.getType().equals(IdentityType.TEACHER)) {
+            throw new BadRequestException("identity_is_not_a_teacher");
+        }
+
+        Credentials credentials = credentialsService.findByIdentityId(identityId);
+        Role role = roleService.findRoleByName("ROLE_METHODIST");
+
+        if (credentials.getRoles().contains(role)) {
+            throw new BadRequestException("teacher_already_has_this_role");
+        }
+
+        credentials.getRoles().add(role);
     }
 
 }
