@@ -40,4 +40,9 @@ public class TeacherController {
         teacherService.addSubjectToTeacher(teacherId, subjectId);
     }
 
+    @PostMapping("{identityId}/methodist")
+    public void addRoleMethodist(@PathVariable UUID identityId) {
+        teacherService.addRoleMethodist(identityId);
+    }
+
 }
