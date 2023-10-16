@@ -16,6 +16,8 @@ public interface ITeacherService {
 
     Teacher update(Teacher admin);
 
+    Teacher findByIdentityId(UUID identityId);
+
     void deleteById(UUID id);
 
     void addGroupToTeacher(UUID teacherId, UUID groupId);
