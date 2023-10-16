@@ -197,6 +197,27 @@ create table messages
 alter table messages
     owner to postgres;
 
+create table marks
+(
+    id         uuid default gen_random_uuid() not null
+        primary key,
+    teacher_id uuid                           not null
+        constraint teacher_fk
+            references teacher,
+    student_id uuid                           not null
+        constraint student_fk
+            references student,
+    subject_id uuid                           not null
+        constraint subject_id
+            references subjects,
+    mark       varchar                        not null
+);
+
+alter table marks
+    owner to postgres;
+
+
+
 
 
 
