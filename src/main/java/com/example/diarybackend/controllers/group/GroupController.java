@@ -1,8 +1,8 @@
 package com.example.diarybackend.controllers.group;
 
 import com.example.diarybackend.controllers.group.requests.GroupCreateRequest;
+import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.models.Group;
-import com.example.diarybackend.models.Student;
 import com.example.diarybackend.services.group.IGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class GroupController {
     }
 
     @GetMapping("{id}/students")
-    public List<Student> findAllStudentsInGroup(@PathVariable UUID id) {
+    public List<StudentDto> findAllStudentsInGroup(@PathVariable UUID id) {
         return groupService.findAllStudentsInGroupById(id);
     }
 

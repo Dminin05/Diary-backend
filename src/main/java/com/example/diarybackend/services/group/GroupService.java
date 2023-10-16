@@ -1,9 +1,10 @@
 package com.example.diarybackend.services.group;
 
 import com.example.diarybackend.controllers.group.requests.GroupCreateRequest;
+import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
+import com.example.diarybackend.mappers.StudentMapper;
 import com.example.diarybackend.models.Group;
-import com.example.diarybackend.models.Student;
 import com.example.diarybackend.repositories.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GroupService implements IGroupService {
 
     private final GroupRepository groupRepository;
+    private final StudentMapper studentMapper;
 
     @Override
     public Group findById(UUID id) {
@@ -37,11 +40,13 @@ public class GroupService implements IGroupService {
     }
 
     @Override
-    public List<Student> findAllStudentsInGroupById(UUID id) {
+    public List<StudentDto> findAllStudentsInGroupById(UUID id) {
 
         Group group = findById(id);
 
-        return group.getStudents();
+        return group.getStudents().stream()
+                .map(studentMapper::entityToDto)
+                .collect(Collectors.toList());
     }
 
 }
