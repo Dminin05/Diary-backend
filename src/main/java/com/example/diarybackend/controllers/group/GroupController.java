@@ -1,6 +1,7 @@
 package com.example.diarybackend.controllers.group;
 
 import com.example.diarybackend.controllers.group.requests.GroupCreateRequest;
+import com.example.diarybackend.dtos.GroupDto;
 import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.models.Group;
 import com.example.diarybackend.services.group.IGroupService;
@@ -18,6 +19,21 @@ public class GroupController {
 
     private final IGroupService groupService;
 
+    @GetMapping
+    public List<GroupDto> findAllGroups() {
+        return groupService.findGroupsInfo();
+    }
+
+    @GetMapping("{groupId}")
+    public GroupDto findGroupById(@PathVariable UUID groupId) {
+        return groupService.findGroupInfoById(groupId);
+    }
+
+    @GetMapping("{groupId}/students")
+    public List<StudentDto> findAllStudentsInGroup(@PathVariable UUID groupId) {
+        return groupService.findAllStudentsInGroupById(groupId);
+    }
+
     @PostMapping("new")
     public ResponseEntity<?> createNewGroup(@RequestBody GroupCreateRequest groupCreateRequest) {
 
@@ -26,9 +42,9 @@ public class GroupController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("{id}/students")
-    public List<StudentDto> findAllStudentsInGroup(@PathVariable UUID id) {
-        return groupService.findAllStudentsInGroupById(id);
+    @PostMapping("{groupId}/{subjectId}")
+    public void addSubjectToTheGroup(@PathVariable UUID groupId, @PathVariable UUID subjectId) {
+        groupService.addSubjectToTheGroupById(groupId, subjectId);
     }
 
 }

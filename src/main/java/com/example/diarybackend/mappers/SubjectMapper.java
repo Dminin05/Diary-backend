@@ -9,4 +9,6 @@ public interface SubjectMapper {
 
     Subject dtoToEntity(SubjectDto subjectDto);
 
+    SubjectDto entityToDto(Subject subject);
+
 }
