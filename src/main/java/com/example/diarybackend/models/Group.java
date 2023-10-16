@@ -27,4 +27,11 @@ public class Group {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "group")
     private List<Student> students;
 
+    @ManyToMany
+    @JoinTable(
+            name = "groups_subjects",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    private List<Subject> subjects;
+
 }

@@ -216,9 +216,20 @@ create table marks
 alter table marks
     owner to postgres;
 
+create table groups_subjects
+(
+    id         uuid default gen_random_uuid() not null
+        primary key,
+    group_id   uuid                           not null
+        constraint group_fk
+            references groups,
+    subject_id uuid                           not null
+        constraint subject_id
+            references subjects
+);
 
-
-
+alter table groups_subjects
+    owner to postgres;
 
 
 
