@@ -2,7 +2,9 @@ package com.example.diarybackend.controllers.marks;
 
 import com.example.diarybackend.config.security.custom.CustomPrincipal;
 import com.example.diarybackend.controllers.marks.requests.MarkCreateRequest;
-import com.example.diarybackend.dtos.MarkDto;
+import com.example.diarybackend.dtos.marks.AvgMark;
+import com.example.diarybackend.dtos.marks.AvgMarkBySubjectDto;
+import com.example.diarybackend.dtos.marks.MarkDto;
 import com.example.diarybackend.models.Teacher;
 import com.example.diarybackend.services.marks.IMarkService;
 import com.example.diarybackend.services.teacher.ITeacherService;
@@ -35,8 +37,18 @@ public class MarkController {
     }
 
     @GetMapping("{studentId}/{subjectId}")
-    public List<MarkDto> findMarksByStudentId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
+    public List<MarkDto> findMarksByStudentIdAndSubjectId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
         return markService.findAllMarksByStudentIdAndSubjectId(studentId, subjectId);
+    }
+
+    @GetMapping("avg/{studentId}")
+    public AvgMark findAvgMarkByStudentId(@PathVariable UUID studentId) {
+        return markService.findAvgMarkByStudentId(studentId);
+    }
+
+    @GetMapping("avg/{studentId}/{subjectId}")
+    public AvgMarkBySubjectDto findAvgMarkByStudentIdAndSubjectId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
+        return markService.findAvgMarkByStudentIdAndSubjectId(studentId, subjectId);
     }
 
 }

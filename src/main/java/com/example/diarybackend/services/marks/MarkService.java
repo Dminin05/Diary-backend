@@ -1,9 +1,15 @@
 package com.example.diarybackend.services.marks;
 
 import com.example.diarybackend.controllers.marks.requests.MarkCreateRequest;
-import com.example.diarybackend.dtos.MarkDto;
+import com.example.diarybackend.dtos.StudentDto;
+import com.example.diarybackend.dtos.SubjectDto;
+import com.example.diarybackend.dtos.marks.AvgMark;
+import com.example.diarybackend.dtos.marks.AvgMarkBySubjectDto;
+import com.example.diarybackend.dtos.marks.MarkDto;
 import com.example.diarybackend.exceptions.BadRequestException;
 import com.example.diarybackend.mappers.MarkMapper;
+import com.example.diarybackend.mappers.StudentMapper;
+import com.example.diarybackend.mappers.SubjectMapper;
 import com.example.diarybackend.models.Mark;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.models.Subject;
@@ -15,6 +21,7 @@ import com.example.diarybackend.services.teacher.ITeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +30,10 @@ import java.util.UUID;
 public class MarkService implements IMarkService {
 
     private final MarkRepository markRepository;
+
     private final MarkMapper markMapper;
+    private final StudentMapper studentMapper;
+    private final SubjectMapper subjectMapper;
 
     private final ITeacherService teacherService;
     private final IStudentService studentService;
@@ -64,6 +74,65 @@ public class MarkService implements IMarkService {
         return marks.stream()
                 .map(markMapper::entityToDto)
                 .toList();
+    }
+
+    @Override
+    public AvgMarkBySubjectDto findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
+
+        Student student = studentService.findById(studentId);
+        StudentDto studentDto = studentMapper.entityToDto(student);
+
+        Subject subject = subjectsService.findById(subjectId);
+        SubjectDto subjectDto = subjectMapper.entityToDto(subject);
+
+        List<Mark> marks = markRepository.findMarksByStudentId(studentId);
+
+        int counter = 0;
+        double sum = 0;
+
+        for (Mark mark : marks) {
+            try {
+                int num = Integer.parseInt(mark.getMark());
+                sum += num;
+                counter++;
+            } catch (NumberFormatException ex) {
+                // TODO
+            }
+        }
+
+        double result = sum/counter;
+        double roundedResult = Double.parseDouble(String.format("%.2f", result)
+                .replace(',', '.'));
+
+        return new AvgMarkBySubjectDto(studentDto, subjectDto, roundedResult);
+    }
+
+    @Override
+    public AvgMark findAvgMarkByStudentId(UUID studentId) {
+
+        Student student = studentService.findById(studentId);
+        StudentDto studentDto = studentMapper.entityToDto(student);
+
+        List<Mark> marks = markRepository.findMarksByStudentId(studentId);
+
+        int counter = 0;
+        double sum = 0;
+
+        for (Mark mark : marks) {
+            try {
+                int num = Integer.parseInt(mark.getMark());
+                sum += num;
+                counter++;
+            } catch (NumberFormatException ex) {
+                // TODO
+            }
+        }
+
+        double result = sum/counter;
+        double roundedResult = Double.parseDouble(String.format("%.2f", result)
+                .replace(',', '.'));
+
+        return new AvgMark(studentDto, roundedResult);
     }
 
 }
