@@ -20,7 +20,7 @@ public class SubjectsService implements ISubjectsService{
     @Override
     public Subject findById(UUID id) {
         return subjectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("subject_with_id_'%s'_not_found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("subject_not_found"));
     }
 
     @Override

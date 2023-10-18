@@ -15,7 +15,7 @@ public class RoleService implements IRoleService{
     @Override
     public Role findRoleByName(String name) {
         return roleRepository.findRoleByName(name)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("role_with_name_'%s'_not_found", name)));
+                .orElseThrow(() -> new ResourceNotFoundException("role_not_found"));
     }
 
 }

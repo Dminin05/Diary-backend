@@ -54,13 +54,13 @@ public class CredentialsService implements ICredentialsService {
     @Override
     public Credentials findByUsername(String username) {
         return credentialsRepository.findCredentialsByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("credentials_with_username_'%s'_not_found", username)));
+                .orElseThrow(() -> new ResourceNotFoundException("credentials_not_found"));
     }
 
     @Override
     public Credentials findByIdentityId(UUID identityId) {
         return credentialsRepository.findCredentialsByIdentity_Id(identityId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("credentials_with_identity_id_'%s'_not_found", identityId)));
+                .orElseThrow(() -> new ResourceNotFoundException("credentials_not_found"));
     }
 
     @Override

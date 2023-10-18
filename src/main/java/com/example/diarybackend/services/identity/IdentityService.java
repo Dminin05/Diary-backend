@@ -23,7 +23,7 @@ public class IdentityService implements IIdentityService {
     @Override
     public Identity findById(UUID id) {
         return identityRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("identity_with_id_'%s'_not_found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("identity_not_found"));
     }
 
     @Override
