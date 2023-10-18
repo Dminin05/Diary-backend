@@ -119,14 +119,14 @@ alter table credentials
 
 create table credentials_roles
 (
-    id             uuid not null
+    id             uuid default gen_random_uuid() not null
         constraint identity_roles_pk
             primary key,
-    credentials_id uuid not null
+    credentials_id uuid                           not null
         constraint credentials_fk
             references credentials
             on update cascade on delete cascade,
-    role_id        uuid not null
+    role_id        uuid                           not null
         constraint role_fk
             references role
             on update cascade on delete cascade
@@ -148,13 +148,13 @@ alter table subjects
 
 create table teachers_groups
 (
-    id         uuid not null
+    id         uuid default gen_random_uuid() not null
         primary key,
-    teacher_id uuid not null
+    teacher_id uuid                           not null
         constraint teacher_fk
             references teacher
             on update cascade on delete cascade,
-    group_id   uuid not null
+    group_id   uuid                           not null
         constraint group_fk
             references groups
             on update cascade on delete cascade
@@ -165,13 +165,13 @@ alter table teachers_groups
 
 create table teachers_subjects
 (
-    id         uuid not null
+    id         uuid default gen_random_uuid() not null
         primary key,
-    teacher_id uuid not null
+    teacher_id uuid                           not null
         constraint teacher_fk
             references teacher
             on update cascade on delete cascade,
-    subject_id uuid not null
+    subject_id uuid                           not null
         constraint subject_fk
             references subjects
             on update cascade on delete cascade
@@ -218,12 +218,12 @@ alter table marks
 
 create table groups_subjects
 (
-    id         uuid not null
+    id         uuid default gen_random_uuid() not null
         primary key,
-    group_id   uuid not null
+    group_id   uuid                           not null
         constraint group_fk
             references groups,
-    subject_id uuid not null
+    subject_id uuid                           not null
         constraint subject_id
             references subjects
 );
