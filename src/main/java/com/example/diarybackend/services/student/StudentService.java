@@ -28,7 +28,7 @@ public class StudentService implements IStudentService{
     public Student findById(UUID id) {
 
         return studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("student_with_id_'%s'_not_found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("student_not_found"));
     }
 
     @Override

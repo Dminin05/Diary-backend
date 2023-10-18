@@ -39,7 +39,7 @@ public class TeacherService implements ITeacherService{
     @Override
     public Teacher findById(UUID id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("teacher_with_id_'%s'_not_found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("teacher_not_found"));
     }
 
     @Override

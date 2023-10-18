@@ -35,7 +35,7 @@ public class GroupService implements IGroupService {
     @Override
     public Group findById(UUID id) {
         return groupRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("group_with_id_'%s'_not_found", id)));
+                .orElseThrow(() -> new ResourceNotFoundException("group_not_found"));
     }
 
     @Override
