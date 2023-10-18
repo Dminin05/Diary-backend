@@ -3,7 +3,6 @@ package com.example.diarybackend.controllers.marks;
 import com.example.diarybackend.config.security.custom.CustomPrincipal;
 import com.example.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.example.diarybackend.dtos.MarkDto;
-import com.example.diarybackend.models.Mark;
 import com.example.diarybackend.models.Teacher;
 import com.example.diarybackend.services.marks.IMarkService;
 import com.example.diarybackend.services.teacher.ITeacherService;
@@ -31,12 +30,12 @@ public class MarkController {
     }
 
     @GetMapping("{studentId}")
-    public List<Mark> findMarksByStudentId(@PathVariable UUID studentId) {
+    public List<MarkDto> findMarksByStudentId(@PathVariable UUID studentId) {
         return markService.findAllMarksByStudentId(studentId);
     }
 
     @GetMapping("{studentId}/{subjectId}")
-    public List<Mark> findMarksByStudentId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
+    public List<MarkDto> findMarksByStudentId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
         return markService.findAllMarksByStudentIdAndSubjectId(studentId, subjectId);
     }
 
