@@ -1,6 +1,6 @@
 package com.example.diarybackend.mappers;
 
-import com.example.diarybackend.dtos.MarkDto;
+import com.example.diarybackend.dtos.marks.MarkDto;
 import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.dtos.SubjectDto;
 import com.example.diarybackend.dtos.TeacherDto;
