@@ -4,9 +4,6 @@ import com.example.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.example.diarybackend.dtos.MarkDto;
 import com.example.diarybackend.exceptions.BadRequestException;
 import com.example.diarybackend.mappers.MarkMapper;
-import com.example.diarybackend.mappers.StudentMapper;
-import com.example.diarybackend.mappers.SubjectMapper;
-import com.example.diarybackend.mappers.TeacherMapper;
 import com.example.diarybackend.models.Mark;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.models.Subject;
@@ -26,11 +23,7 @@ import java.util.UUID;
 public class MarkService implements IMarkService {
 
     private final MarkRepository markRepository;
-
     private final MarkMapper markMapper;
-    private final StudentMapper studentMapper;
-    private final SubjectMapper subjectMapper;
-    private final TeacherMapper teacherMapper;
 
     private final ITeacherService teacherService;
     private final IStudentService studentService;
@@ -50,22 +43,27 @@ public class MarkService implements IMarkService {
         Mark mark = markMapper.requestToEntity(markCreateRequest.getMark(), teacher, student, subject);
         markRepository.save(mark);
 
-        return markMapper.entityToDto(
-                teacherMapper.entityToDto(teacher),
-                studentMapper.entityToDto(student),
-                subjectMapper.entityToDto(subject),
-                markCreateRequest.getMark()
-        );
+        return markMapper.entityToDto(mark);
     }
 
     @Override
-    public List<Mark> findAllMarksByStudentId(UUID studentId) {
-        return markRepository.findMarksByStudentId(studentId);
+    public List<MarkDto> findAllMarksByStudentId(UUID studentId) {
+
+        List<Mark> marks = markRepository.findMarksByStudentId(studentId);
+
+        return marks.stream()
+                .map(markMapper::entityToDto)
+                .toList();
     }
 
     @Override
-    public List<Mark> findAllMarksByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
-        return markRepository.findMarksByStudentIdAndSubjectId(studentId, subjectId);
+    public List<MarkDto> findAllMarksByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
+
+        List<Mark> marks =  markRepository.findMarksByStudentIdAndSubjectId(studentId, subjectId);
+
+        return marks.stream()
+                .map(markMapper::entityToDto)
+                .toList();
     }
 
 }
