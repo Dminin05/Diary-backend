@@ -13,15 +13,17 @@ import java.util.UUID;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "sender_id")
-    private UUID senderId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private Identity sender;
 
-    @Column(name = "receiver_id")
-    private UUID receiverId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    private Identity receiver;
 
     @Column(name = "title")
     private String title;

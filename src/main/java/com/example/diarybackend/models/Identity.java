@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Identity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -22,13 +22,19 @@ public class Identity {
     @Enumerated(EnumType.STRING)
     private IdentityType type;
 
-    @Column(name = "student_id")
-    private UUID studentId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    private Admin admin;
 
-    @Column(name = "teacher_id")
-    private UUID teacherId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
 
-    @Column(name = "admin_id")
-    private UUID adminId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
+
+    @OneToOne(mappedBy = "identity")
+    private Credentials credentials;
 
 }

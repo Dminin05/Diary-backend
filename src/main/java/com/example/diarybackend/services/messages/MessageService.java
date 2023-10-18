@@ -3,10 +3,10 @@ package com.example.diarybackend.services.messages;
 import com.example.diarybackend.controllers.messages.requests.MessageRequest;
 import com.example.diarybackend.dtos.MessageDto;
 import com.example.diarybackend.mappers.MessageMapper;
-import com.example.diarybackend.models.Credentials;
+import com.example.diarybackend.models.Identity;
 import com.example.diarybackend.models.Message;
 import com.example.diarybackend.repositories.MessageRepository;
-import com.example.diarybackend.services.credentials.ICredentialsService;
+import com.example.diarybackend.services.identity.IIdentityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ public class MessageService implements IMessageService{
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
 
-    private final ICredentialsService credentialsService;
+    private final IIdentityService identityService;
 
     @Override
     public MessageDto findMessageById(UUID id) {
@@ -30,43 +30,34 @@ public class MessageService implements IMessageService{
     }
 
     @Override
-    public Message create(MessageRequest messageRequest) {
+    public MessageDto create(MessageRequest messageRequest) {
 
-        Message message = messageMapper.requestToEntity(messageRequest);
-        return messageRepository.save(message);
+        Identity sender = identityService.findById(messageRequest.getSenderId());
+        Identity receiver = identityService.findById(messageRequest.getReceiverId());
+
+        Message message = messageMapper.requestToEntity(messageRequest, sender, receiver);
+        messageRepository.save(message);
+
+        return messageMapper.entityToDto(message);
     }
 
     @Override
     public List<MessageDto> findReceivedMessages(UUID identityId, int pageIndex, int pageSize) {
 
-        Credentials senderCredentials = credentialsService.findByIdentityId(identityId);
-        String senderUsername = senderCredentials.getUsername();
-
         Page<Message> messages = messageRepository.findMessagesByReceiverId(identityId, PageRequest.of(pageIndex, pageSize));
 
         return messages.stream()
-                .map(message -> {
-                    Credentials receiverCredentials = credentialsService.findByIdentityId(message.getReceiverId());
-                    String receiverUsername = receiverCredentials.getUsername();
-                    return messageMapper.entityToDto(message, senderUsername,receiverUsername);
-                })
+                .map(messageMapper::entityToDto)
                 .toList();
     }
 
     @Override
     public List<MessageDto> findSentMessages(UUID identityId, int pageIndex, int pageSize) {
 
-        Credentials senderCredentials = credentialsService.findByIdentityId(identityId);
-        String senderUsername = senderCredentials.getUsername();
-
         Page<Message> messages = messageRepository.findMessagesBySenderId(identityId, PageRequest.of(pageIndex, pageSize));
 
         return messages.stream()
-                .map(message -> {
-                    Credentials receiverCredentials = credentialsService.findByIdentityId(message.getReceiverId());
-                    String receiverUsername = receiverCredentials.getUsername();
-                    return messageMapper.entityToDto(message, senderUsername, receiverUsername);
-                })
+                .map(messageMapper::entityToDto)
                 .toList();
     }
 

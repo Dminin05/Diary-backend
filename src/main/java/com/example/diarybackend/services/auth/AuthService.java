@@ -78,7 +78,7 @@ public class AuthService implements IAuthService {
 
                 Student student = studentService.create(obj);
 
-                identity.setStudentId(student.getId());
+                identity.setStudent(student);
                 identity.setType(IdentityType.STUDENT);
                 identityService.save(identity);
 
@@ -92,7 +92,7 @@ public class AuthService implements IAuthService {
 
                 Teacher teacher = teacherService.create(obj);
 
-                identity.setTeacherId(teacher.getId());
+                identity.setTeacher(teacher);
                 identity.setType(IdentityType.TEACHER);
                 identityService.save(identity);
 

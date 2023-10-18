@@ -44,8 +44,8 @@ public class TeacherService implements ITeacherService{
 
     @Override
     public Teacher findByIdentityId(UUID identityId) {
-        Identity identity = identityService.findById(identityId);
-        return findById(identity.getTeacherId());
+        return identityService.findById(identityId)
+                .getTeacher();
     }
 
     @Override
