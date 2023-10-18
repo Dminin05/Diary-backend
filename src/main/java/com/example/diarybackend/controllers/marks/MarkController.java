@@ -2,6 +2,7 @@ package com.example.diarybackend.controllers.marks;
 
 import com.example.diarybackend.config.security.custom.CustomPrincipal;
 import com.example.diarybackend.controllers.marks.requests.MarkCreateRequest;
+import com.example.diarybackend.dtos.MarkDto;
 import com.example.diarybackend.models.Mark;
 import com.example.diarybackend.models.Teacher;
 import com.example.diarybackend.services.marks.IMarkService;
@@ -21,7 +22,7 @@ public class MarkController {
     private final ITeacherService teacherService;
 
     @PostMapping("new")
-    public Mark createNewMark(CustomPrincipal principal, @RequestBody MarkCreateRequest markCreateRequest) {
+    public MarkDto createNewMark(CustomPrincipal principal, @RequestBody MarkCreateRequest markCreateRequest) {
 
         Teacher teacher = teacherService.findByIdentityId(principal.getIdentityId());
         markCreateRequest.setTeacherId(teacher.getId());

@@ -1,6 +1,7 @@
 package com.example.diarybackend.controllers.student;
 
 import com.example.diarybackend.dtos.StudentDto;
+import com.example.diarybackend.mappers.StudentMapper;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.services.student.IStudentService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class StudentController {
 
     private final IStudentService studentService;
+    private final StudentMapper studentMapper;
 
     @GetMapping
     public List<Student> findAll() {
@@ -23,7 +25,7 @@ public class StudentController {
 
     @GetMapping("{id}")
     public StudentDto findById(@PathVariable UUID id) {
-        return studentService.findById(id);
+        return studentMapper.entityToDto(studentService.findById(id));
     }
 
     @DeleteMapping("{id}")
