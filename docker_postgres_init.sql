@@ -1,10 +1,10 @@
 create table teacher
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid    not null
         constraint teacher_pk
             primary key,
-    first_name varchar                        not null,
-    last_name  varchar                        not null,
+    first_name varchar not null,
+    last_name  varchar not null,
     patronymic varchar
 );
 
@@ -13,11 +13,11 @@ alter table teacher
 
 create table admin
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid    not null
         constraint admin_pk
             primary key,
-    first_name varchar                        not null,
-    last_name  varchar                        not null,
+    first_name varchar not null,
+    last_name  varchar not null,
     patronymic varchar
 );
 
@@ -26,9 +26,9 @@ alter table admin
 
 create table role
 (
-    id   uuid default gen_random_uuid() not null
+    id   uuid    not null
         primary key,
-    name varchar                        not null
+    name varchar not null
 );
 
 alter table role
@@ -36,11 +36,11 @@ alter table role
 
 create table token
 (
-    id       uuid default gen_random_uuid() not null
+    id       uuid    not null
         constraint token_pk
             primary key,
-    username varchar                        not null,
-    value    varchar                        not null
+    username varchar not null,
+    value    varchar not null
 );
 
 alter table token
@@ -48,11 +48,11 @@ alter table token
 
 create table groups
 (
-    id    uuid default gen_random_uuid() not null
+    id    uuid    not null
         constraint group_pkey
             primary key,
-    title varchar                        not null,
-    year  integer                        not null
+    title varchar not null,
+    year  integer not null
 );
 
 alter table groups
@@ -60,13 +60,13 @@ alter table groups
 
 create table student
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid    not null
         constraint student_pk
             primary key,
-    first_name varchar                        not null,
-    last_name  varchar                        not null,
+    first_name varchar not null,
+    last_name  varchar not null,
     patronymic varchar,
-    group_id   uuid                           not null
+    group_id   uuid    not null
         constraint group_fk
             references groups
 );
@@ -76,10 +76,10 @@ alter table student
 
 create table identity
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid    not null
         constraint identity_pk
             primary key,
-    type       varchar                        not null,
+    type       varchar not null,
     student_id uuid
         constraint student_fk
             references student
@@ -99,19 +99,19 @@ alter table identity
 
 create table credentials
 (
-    id                uuid    default gen_random_uuid() not null
+    id                uuid                  not null
         constraint credentials_pk
             primary key,
-    identity_id       uuid                              not null
+    identity_id       uuid                  not null
         constraint identity_fk
             references identity
             on update cascade on delete cascade,
-    username          varchar                           not null,
-    password          varchar                           not null,
-    email             varchar                           not null,
-    is_email_verified boolean default false             not null,
-    created_at        timestamp                         not null,
-    updated_at        timestamp                         not null
+    username          varchar               not null,
+    password          varchar               not null,
+    email             varchar               not null,
+    is_email_verified boolean default false not null,
+    created_at        timestamp             not null,
+    updated_at        timestamp             not null
 );
 
 alter table credentials
@@ -119,14 +119,14 @@ alter table credentials
 
 create table credentials_roles
 (
-    id             uuid default gen_random_uuid() not null
+    id             uuid not null
         constraint identity_roles_pk
             primary key,
-    credentials_id uuid                           not null
+    credentials_id uuid not null
         constraint credentials_fk
             references credentials
             on update cascade on delete cascade,
-    role_id        uuid                           not null
+    role_id        uuid not null
         constraint role_fk
             references role
             on update cascade on delete cascade
@@ -137,10 +137,10 @@ alter table credentials_roles
 
 create table subjects
 (
-    id    uuid default gen_random_uuid() not null
+    id    uuid    not null
         constraint subjects_pk
             primary key,
-    title varchar                        not null
+    title varchar not null
 );
 
 alter table subjects
@@ -148,13 +148,13 @@ alter table subjects
 
 create table teachers_groups
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid not null
         primary key,
-    teacher_id uuid                           not null
+    teacher_id uuid not null
         constraint teacher_fk
             references teacher
             on update cascade on delete cascade,
-    group_id   uuid                           not null
+    group_id   uuid not null
         constraint group_fk
             references groups
             on update cascade on delete cascade
@@ -165,13 +165,13 @@ alter table teachers_groups
 
 create table teachers_subjects
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid not null
         primary key,
-    teacher_id uuid                           not null
+    teacher_id uuid not null
         constraint teacher_fk
             references teacher
             on update cascade on delete cascade,
-    subject_id uuid                           not null
+    subject_id uuid not null
         constraint subject_fk
             references subjects
             on update cascade on delete cascade
@@ -182,16 +182,16 @@ alter table teachers_subjects
 
 create table messages
 (
-    id          uuid default gen_random_uuid() not null
+    id          uuid    not null
         primary key,
-    sender_id   uuid                           not null
+    sender_id   uuid    not null
         constraint sender_fk
             references identity,
-    receiver_id uuid                           not null
+    receiver_id uuid    not null
         constraint receiver_fk
             references identity,
-    title       varchar                        not null,
-    message     varchar                        not null
+    title       varchar not null,
+    message     varchar not null
 );
 
 alter table messages
@@ -199,18 +199,18 @@ alter table messages
 
 create table marks
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid    not null
         primary key,
-    teacher_id uuid                           not null
+    teacher_id uuid    not null
         constraint teacher_fk
             references teacher,
-    student_id uuid                           not null
+    student_id uuid    not null
         constraint student_fk
             references student,
-    subject_id uuid                           not null
+    subject_id uuid    not null
         constraint subject_id
             references subjects,
-    mark       varchar                        not null
+    mark       varchar not null
 );
 
 alter table marks
@@ -218,18 +218,20 @@ alter table marks
 
 create table groups_subjects
 (
-    id         uuid default gen_random_uuid() not null
+    id         uuid not null
         primary key,
-    group_id   uuid                           not null
+    group_id   uuid not null
         constraint group_fk
             references groups,
-    subject_id uuid                           not null
+    subject_id uuid not null
         constraint subject_id
             references subjects
 );
 
 alter table groups_subjects
     owner to postgres;
+
+
 
 
 

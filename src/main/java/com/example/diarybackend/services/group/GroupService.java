@@ -81,11 +81,10 @@ public class GroupService implements IGroupService {
     public List<GroupDto> findGroupsInfo() {
 
         List<Group> groups = groupRepository.findAll();
-        List<GroupDto> groupDtoList = new ArrayList<>();
 
-        groups.forEach(group -> groupDtoList.add(findGroupInfo(group)));
-
-        return groupDtoList;
+        return groups.stream()
+                .map(this::findGroupInfo)
+                .toList();
     }
 
     @Override
