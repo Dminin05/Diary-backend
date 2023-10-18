@@ -1,9 +1,7 @@
 package com.example.diarybackend.services.student;
 
 import com.example.diarybackend.controllers.auth.requests.StudentRegisterRequest;
-import com.example.diarybackend.dtos.StudentDto;
 import com.example.diarybackend.exceptions.ResourceNotFoundException;
-import com.example.diarybackend.mappers.StudentMapper;
 import com.example.diarybackend.models.Group;
 import com.example.diarybackend.models.Student;
 import com.example.diarybackend.repositories.StudentRepository;
@@ -20,7 +18,6 @@ public class StudentService implements IStudentService{
 
     private final StudentRepository studentRepository;
     private final IGroupService groupService;
-    private final StudentMapper baseStudentMapper;
 
     @Override
     public List<Student> findAll() {
@@ -28,14 +25,10 @@ public class StudentService implements IStudentService{
     }
 
     @Override
-    public StudentDto findById(UUID id) {
+    public Student findById(UUID id) {
 
-        Student student = studentRepository.findById(id)
+        return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("student_with_id_'%s'_not_found", id)));
-
-        System.out.println(student.getFirstName());
-
-        return baseStudentMapper.entityToDto(student);
     }
 
     @Override

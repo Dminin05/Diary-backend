@@ -13,18 +13,21 @@ import java.util.UUID;
 public class Mark {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "teacher_id")
-    private UUID teacherId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
-    @Column(name = "student_id")
-    private UUID studentId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
 
-    @Column(name = "subject_id")
-    private UUID subjectId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
 
     @Column(name = "mark")
     private String mark;
