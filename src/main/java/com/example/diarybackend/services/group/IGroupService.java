@@ -22,4 +22,6 @@ public interface IGroupService {
 
     void addSubjectToTheGroupById(UUID groupId, UUID subjectId);
 
+    void removeSubjectFromGroupById(UUID groupId, UUID subjectId);
+
 }

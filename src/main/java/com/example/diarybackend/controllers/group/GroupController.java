@@ -47,4 +47,9 @@ public class GroupController {
         groupService.addSubjectToTheGroupById(groupId, subjectId);
     }
 
+    @DeleteMapping("{groupId}/{subjectId}")
+    public void removeSubjectFromGroup(@PathVariable UUID groupId, @PathVariable UUID subjectId) {
+        groupService.removeSubjectFromGroupById(groupId, subjectId);
+    }
+
 }
