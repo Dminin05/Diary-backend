@@ -114,4 +114,15 @@ public class GroupService implements IGroupService {
         return groupMapper.entityToDto(group, students, subjects);
     }
 
+    @Override
+    public void removeSubjectFromGroupById(UUID groupId, UUID subjectId) {
+
+        Group group = findById(groupId);
+        Subject subject = subjectsService.findById(subjectId);
+
+        group.getSubjects().remove(subject);
+
+        groupRepository.save(group);
+    }
+
 }
