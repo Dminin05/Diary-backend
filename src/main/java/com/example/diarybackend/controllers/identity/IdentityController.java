@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/identity")
+@RequestMapping("api/v1/identities")
 public class IdentityController {
 
     private final IIdentityService identityService;
