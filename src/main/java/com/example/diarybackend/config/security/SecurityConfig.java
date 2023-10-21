@@ -17,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.example.diarybackend.config.security.SecurityEndPoints.*;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,10 +35,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("api/v1/auth/*").permitAll()
-                        .requestMatchers("api/v1/group/new").hasRole("ADMIN")
-                        .requestMatchers("api/v1/subject/new").hasRole("ADMIN")
-                        .requestMatchers("api/v1/teacher/methodist").hasRole("ADMIN")
+                        .requestMatchers(AUTH_WHITELIST_AUTH).permitAll()
+                        .requestMatchers(AUTH_REQUIRE_ADMIN).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
