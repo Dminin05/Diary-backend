@@ -19,14 +19,15 @@ import com.example.diarybackend.services.student.IStudentService;
 import com.example.diarybackend.services.subjects.ISubjectsService;
 import com.example.diarybackend.services.teacher.ITeacherService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MarkService implements IMarkService {
 
     private final MarkRepository markRepository;
@@ -96,13 +97,23 @@ public class MarkService implements IMarkService {
                 sum += num;
                 counter++;
             } catch (NumberFormatException ex) {
-                // TODO
+                log.error(ex.toString());
             }
         }
 
+        if (counter == 0) {
+            return new AvgMarkBySubjectDto(studentDto, subjectDto, 0);
+        }
+
         double result = sum/counter;
-        double roundedResult = Double.parseDouble(String.format("%.2f", result)
-                .replace(',', '.'));
+        double roundedResult = 0;
+
+        try {
+            roundedResult = Double.parseDouble(String.format("%.2f", result)
+                    .replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            throw new NumberFormatException("error_casting_to_the_required_type");
+        }
 
         return new AvgMarkBySubjectDto(studentDto, subjectDto, roundedResult);
     }
@@ -124,13 +135,23 @@ public class MarkService implements IMarkService {
                 sum += num;
                 counter++;
             } catch (NumberFormatException ex) {
-                // TODO
+                log.error(ex.toString());
             }
         }
 
+        if (counter == 0) {
+            return new AvgMark(studentDto, 0);
+        }
+
         double result = sum/counter;
-        double roundedResult = Double.parseDouble(String.format("%.2f", result)
-                .replace(',', '.'));
+        double roundedResult = 0;
+
+        try {
+            roundedResult = Double.parseDouble(String.format("%.2f", result)
+                    .replace(',', '.'));
+        } catch (NumberFormatException ex) {
+            throw new NumberFormatException("error_casting_to_the_required_type");
+        }
 
         return new AvgMark(studentDto, roundedResult);
     }
