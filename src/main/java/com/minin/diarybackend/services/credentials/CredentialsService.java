@@ -1,5 +1,6 @@
 package com.minin.diarybackend.services.credentials;
 
+import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.models.Credentials;
 import com.minin.diarybackend.models.Identity;
@@ -49,6 +50,21 @@ public class CredentialsService implements ICredentialsService {
         credentials.setRoles(roles);
 
         return credentialsRepository.save(credentials);
+    }
+
+    @Override
+    public void updateEmail(UUID identityId, String email) {
+
+        if (isCredentialsExistsByEmail(email)) {
+            throw new BadRequestException("this_email_already_exists");
+        }
+
+        Credentials credentials = findByIdentityId(identityId);
+
+        credentials.setEmail(email);
+        credentials.setEmailVerified(false);
+
+        credentialsRepository.save(credentials);
     }
 
     @Override
