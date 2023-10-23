@@ -1,7 +1,9 @@
 package com.minin.diarybackend.services.student;
 
 import com.minin.diarybackend.controllers.auth.requests.StudentRegisterRequest;
+import com.minin.diarybackend.dtos.StudentDto;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
+import com.minin.diarybackend.mappers.StudentMapper;
 import com.minin.diarybackend.models.Group;
 import com.minin.diarybackend.models.Student;
 import com.minin.diarybackend.repositories.StudentRepository;
@@ -19,9 +21,13 @@ public class StudentService implements IStudentService{
     private final StudentRepository studentRepository;
     private final IGroupService groupService;
 
+    private final StudentMapper studentMapper;
+
     @Override
-    public List<Student> findAll() {
-        return studentRepository.findAll();
+    public List<StudentDto> findAll() {
+        return studentRepository.findAll().stream()
+                .map(studentMapper::entityToDto)
+                .toList();
     }
 
     @Override
@@ -44,11 +50,6 @@ public class StudentService implements IStudentService{
         student.setGroup(group);
 
         return studentRepository.save(student);
-    }
-
-    @Override
-    public Student update(Student student) {
-        return null;
     }
 
     @Override
