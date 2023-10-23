@@ -2,12 +2,10 @@ package com.minin.diarybackend.controllers.credentials;
 
 import com.minin.diarybackend.config.security.custom.CustomPrincipal;
 import com.minin.diarybackend.controllers.credentials.requests.EmailUpdateRequest;
+import com.minin.diarybackend.controllers.credentials.requests.VerificationCodeRequest;
 import com.minin.diarybackend.services.credentials.ICredentialsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +17,11 @@ public class CredentialsController {
     @PatchMapping
     public void updateEmail(CustomPrincipal principal, @RequestBody EmailUpdateRequest emailUpdateRequest) {
         credentialsService.updateEmail(principal.getIdentityId(), emailUpdateRequest.getValue());
+    }
+
+    @PostMapping("verify")
+    public void verifyEmail(CustomPrincipal principal, @RequestBody VerificationCodeRequest verificationCodeRequest) {
+        credentialsService.verifyEmail(principal.getIdentityId(), verificationCodeRequest.getValue());
     }
 
 }

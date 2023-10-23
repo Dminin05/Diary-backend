@@ -21,3 +21,19 @@ spring:
     refresh-secret: ""
     life-time: 30m
     refresh-life-time: 1M
+
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: "Dm-minin05"
+    password: "tsopuwkiyqqynzuo"
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+    sender:
+      email: "Dm-minin05@yandex.ru"
+      text: "Dm-minin05"

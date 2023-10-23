@@ -17,6 +17,8 @@ public interface ICredentialsService {
 
     void updateEmail(UUID identityId, String email);
 
+    void verifyEmail(UUID identityId, String code);
+
     boolean isCredentialsExistsByUsername(String username);
 
     boolean isCredentialsExistsByEmail(String email);

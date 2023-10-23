@@ -5,11 +5,14 @@ import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.models.Credentials;
 import com.minin.diarybackend.models.Identity;
 import com.minin.diarybackend.models.Role;
+import com.minin.diarybackend.models.VerificationCode;
 import com.minin.diarybackend.repositories.CredentialsRepository;
+import com.minin.diarybackend.services.codes.IVerificationCodeService;
 import com.minin.diarybackend.services.role.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +23,7 @@ public class CredentialsService implements ICredentialsService {
 
     private final CredentialsRepository credentialsRepository;
     private final IRoleService roleService;
+    private final IVerificationCodeService verificationCodeService;
 
     @Override
     public Credentials create(String username, String password, String email, Identity identity) {
@@ -65,6 +69,20 @@ public class CredentialsService implements ICredentialsService {
         credentials.setEmailVerified(false);
 
         credentialsRepository.save(credentials);
+    }
+
+    @Override
+    public void verifyEmail(UUID identityId, String code) {
+
+        Credentials credentials = findByIdentityId(identityId);
+        VerificationCode verificationCode = verificationCodeService.findByValue(code);
+
+        boolean isVerificationCodeValid = verificationCode.getExpiresAt().isAfter(LocalDateTime.now());
+
+        if (verificationCode.getValue().equals(code) && isVerificationCodeValid) {
+            credentials.setEmailVerified(true);
+            verificationCodeService.deleteById(verificationCode.getId());
+        }
     }
 
     @Override
