@@ -231,6 +231,19 @@ create table groups_subjects
 alter table groups_subjects
     owner to postgres;
 
+create table verification_codes
+(
+    id         uuid      not null
+        constraint verification_codes_pk
+            primary key,
+    value      varchar   not null,
+    expires_at timestamp not null
+);
+
+alter table verification_codes
+    owner to postgres;
+
+
 
 
 
