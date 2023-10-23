@@ -19,7 +19,7 @@ public class StudentController {
     private final StudentMapper studentMapper;
 
     @GetMapping
-    public List<Student> findAll() {
+    public List<StudentDto> findAll() {
         return studentService.findAll();
     }
 
