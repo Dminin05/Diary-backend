@@ -1,6 +1,6 @@
 package com.minin.diarybackend.controllers.teacher;
 
-import com.minin.diarybackend.models.Teacher;
+import com.minin.diarybackend.dtos.TeacherDto;
 import com.minin.diarybackend.services.teacher.ITeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +16,13 @@ public class TeacherController {
     private final ITeacherService teacherService;
 
     @GetMapping
-    public List<Teacher> findAll() {
+    public List<TeacherDto> findAll() {
         return teacherService.findAll();
     }
 
     @GetMapping("{id}")
-    public Teacher findById(@PathVariable UUID id) {
-        return teacherService.findById(id);
+    public TeacherDto findById(@PathVariable UUID id) {
+        return teacherService.findBaseInfoById(id);
     }
 
     @DeleteMapping("{id}")

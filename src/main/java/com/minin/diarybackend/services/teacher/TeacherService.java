@@ -1,9 +1,11 @@
 package com.minin.diarybackend.services.teacher;
 
 import com.minin.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
+import com.minin.diarybackend.dtos.TeacherDto;
 import com.minin.diarybackend.exceptions.AlreadyExistsException;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
+import com.minin.diarybackend.mappers.TeacherMapper;
 import com.minin.diarybackend.models.*;
 import com.minin.diarybackend.models.types.IdentityType;
 import com.minin.diarybackend.repositories.TeacherRepository;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class TeacherService implements ITeacherService{
 
     private final TeacherRepository teacherRepository;
+    private final TeacherMapper teacherMapper;
 
     private final IGroupService groupService;
     private final ISubjectsService subjectsService;
@@ -32,14 +35,21 @@ public class TeacherService implements ITeacherService{
     private final IRoleService roleService;
 
     @Override
-    public List<Teacher> findAll() {
-        return teacherRepository.findAll();
+    public List<TeacherDto> findAll() {
+        return teacherRepository.findAll().stream()
+                .map(teacherMapper::entityToDto)
+                .toList();
     }
 
     @Override
     public Teacher findById(UUID id) {
         return teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("teacher_not_found"));
+    }
+
+    @Override
+    public TeacherDto findBaseInfoById(UUID id) {
+        return teacherMapper.entityToDto(findById(id));
     }
 
     @Override
@@ -61,11 +71,6 @@ public class TeacherService implements ITeacherService{
     }
 
     @Override
-    public Teacher update(Teacher admin) {
-        return null;
-    }
-
-    @Override
     public void deleteById(UUID id) {
         teacherRepository.deleteById(id);
     }
@@ -82,7 +87,7 @@ public class TeacherService implements ITeacherService{
 
         teacher.getGroups().add(group);
 
-        teacherRepository.save(teacher); // TODO method update in service
+        update(teacher);
     }
 
     @Override
@@ -97,7 +102,7 @@ public class TeacherService implements ITeacherService{
 
         teacher.getSubjects().add(subject);
 
-        teacherRepository.save(teacher); // TODO method update in service
+        update(teacher);
     }
 
     @Override
@@ -117,6 +122,10 @@ public class TeacherService implements ITeacherService{
         }
 
         credentials.getRoles().add(role);
+    }
+
+    private void update(Teacher teacher) {
+        teacherRepository.save(teacher);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.minin.diarybackend.services.teacher;
 
 import com.minin.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
+import com.minin.diarybackend.dtos.TeacherDto;
 import com.minin.diarybackend.models.Teacher;
 
 import java.util.List;
@@ -8,13 +9,13 @@ import java.util.UUID;
 
 public interface ITeacherService {
 
-    List<Teacher> findAll();
+    List<TeacherDto> findAll();
 
     Teacher findById(UUID id);
 
-    Teacher create(TeacherRegisterRequest createRequest);
+    TeacherDto findBaseInfoById(UUID id);
 
-    Teacher update(Teacher admin);
+    Teacher create(TeacherRegisterRequest createRequest);
 
     Teacher findByIdentityId(UUID identityId);
 
