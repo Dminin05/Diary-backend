@@ -8,6 +8,7 @@ import com.minin.diarybackend.controllers.auth.requests.registration.IdentityReg
 import com.minin.diarybackend.controllers.auth.responses.TokenResponse;
 import com.minin.diarybackend.exceptions.AuthenticationException;
 import com.minin.diarybackend.services.auth.IAuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Authentication")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/auth")

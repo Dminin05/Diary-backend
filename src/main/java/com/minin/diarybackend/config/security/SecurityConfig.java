@@ -17,8 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.minin.diarybackend.config.security.SecurityEndPoints.AUTH_REQUIRE_ADMIN;
-import static com.minin.diarybackend.config.security.SecurityEndPoints.AUTH_WHITELIST_AUTH;
+import static com.minin.diarybackend.config.security.SecurityEndPoints.*;
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +36,7 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST_AUTH).permitAll()
+                        .requestMatchers(AUTH_WHITELIST_SWAGGER).permitAll()
                         .requestMatchers(AUTH_REQUIRE_ADMIN).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

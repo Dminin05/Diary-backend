@@ -9,12 +9,14 @@ import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.models.Teacher;
 import com.minin.diarybackend.services.marks.IMarkService;
 import com.minin.diarybackend.services.teacher.ITeacherService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Marks")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/marks")

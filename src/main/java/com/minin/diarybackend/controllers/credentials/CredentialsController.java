@@ -4,9 +4,11 @@ import com.minin.diarybackend.config.security.custom.CustomPrincipal;
 import com.minin.diarybackend.controllers.credentials.requests.EmailUpdateRequest;
 import com.minin.diarybackend.controllers.credentials.requests.VerificationCodeRequest;
 import com.minin.diarybackend.services.credentials.ICredentialsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Credentials")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/credentials")
