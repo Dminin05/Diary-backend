@@ -57,6 +57,11 @@ public class CredentialsService implements ICredentialsService {
     }
 
     @Override
+    public void update(Credentials credentials) {
+        credentialsRepository.save(credentials);
+    }
+
+    @Override
     public void updateEmail(UUID identityId, String email) {
 
         if (isCredentialsExistsByEmail(email)) {
@@ -68,7 +73,7 @@ public class CredentialsService implements ICredentialsService {
         credentials.setEmail(email);
         credentials.setEmailVerified(false);
 
-        credentialsRepository.save(credentials);
+        update(credentials);
     }
 
     @Override
@@ -86,8 +91,20 @@ public class CredentialsService implements ICredentialsService {
     }
 
     @Override
+    public Credentials findById(UUID id) {
+        return credentialsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("credentials_not_found"));
+    }
+
+    @Override
     public Credentials findByUsername(String username) {
         return credentialsRepository.findCredentialsByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("credentials_not_found"));
+    }
+
+    @Override
+    public Credentials findByEmail(String email) {
+        return credentialsRepository.findCredentialsByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("credentials_not_found"));
     }
 

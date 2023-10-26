@@ -237,7 +237,8 @@ create table verification_codes
         constraint verification_codes_pk
             primary key,
     value      varchar   not null,
-    expires_at timestamp not null
+    expires_at timestamp not null,
+    email      varchar   not null
 );
 
 alter table verification_codes

@@ -1,5 +1,6 @@
 package com.minin.diarybackend.services.mailing;
 
+import com.minin.diarybackend.controllers.mailing.requests.EmailSendRequest;
 import com.minin.diarybackend.models.VerificationCode;
 import com.minin.diarybackend.services.codes.IVerificationCodeService;
 import com.minin.diarybackend.services.credentials.ICredentialsService;
@@ -25,7 +26,7 @@ public class MailingService implements IMailingService {
     private String senderEmail;
 
     @Override
-    public void sendEmailVerificationCode(UUID identityId) {
+    public void sendVerificationCode(UUID identityId) {
 
         String email = credentialsService.findByIdentityId(identityId).getEmail();
         String code = generateVerificationCode();
@@ -45,6 +46,33 @@ public class MailingService implements IMailingService {
 
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setValue(code);
+        verificationCode.setEmail(email);
+
+        verificationCodeService.create(verificationCode);
+    }
+
+    @Override
+    public void sendVerificationCode(EmailSendRequest emailSendRequest) {
+
+        String email = emailSendRequest.getEmail();
+        String code = generateVerificationCode();
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom(senderEmail);
+        message.setTo(email);
+        message.setSubject("Код подтверждения");
+        message.setText(code);
+
+        try {
+            javaMailSender.send(message);
+        } catch (MailException ex) {
+            // TODO
+        }
+
+        VerificationCode verificationCode = new VerificationCode();
+        verificationCode.setValue(code);
+        verificationCode.setEmail(email);
 
         verificationCodeService.create(verificationCode);
     }

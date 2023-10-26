@@ -11,9 +11,15 @@ public interface ICredentialsService {
 
     Credentials create(String username, String password, String email, Identity identity);
 
+    Credentials findById(UUID id);
+
     Credentials findByUsername(String username);
 
+    Credentials findByEmail(String email);
+
     Credentials findByIdentityId(UUID identityId);
+
+    void update(Credentials credentials);
 
     void updateEmail(UUID identityId, String email);
 

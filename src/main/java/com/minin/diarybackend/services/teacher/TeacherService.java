@@ -1,6 +1,6 @@
 package com.minin.diarybackend.services.teacher;
 
-import com.minin.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
+import com.minin.diarybackend.controllers.auth.requests.registration.TeacherRegisterRequest;
 import com.minin.diarybackend.dtos.TeacherDto;
 import com.minin.diarybackend.exceptions.AlreadyExistsException;
 import com.minin.diarybackend.exceptions.BadRequestException;

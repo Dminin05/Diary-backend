@@ -1,4 +1,4 @@
-package com.minin.diarybackend.controllers.auth.requests;
+package com.minin.diarybackend.controllers.auth.requests.registration;
 
 public final class TeacherRegisterRequest extends IdentityRegisterRequest {
 
