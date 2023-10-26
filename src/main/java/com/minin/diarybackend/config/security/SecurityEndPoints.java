@@ -11,6 +11,18 @@ public class SecurityEndPoints {
             "api/v1/verification/verify-recovering"
     };
 
+    static final String[] AUTH_WHITELIST_SWAGGER = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
     // has_role("ADMIN")
     static final String[] AUTH_REQUIRE_ADMIN = {
             "api/v1/auth/register",

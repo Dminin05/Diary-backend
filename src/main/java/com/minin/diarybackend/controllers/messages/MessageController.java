@@ -4,11 +4,13 @@ import com.minin.diarybackend.config.security.custom.CustomPrincipal;
 import com.minin.diarybackend.controllers.messages.requests.MessageRequest;
 import com.minin.diarybackend.dtos.MessageDto;
 import com.minin.diarybackend.services.messages.IMessageService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Messages")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/messages")

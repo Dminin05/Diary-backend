@@ -5,6 +5,7 @@ import com.minin.diarybackend.models.Credentials;
 import com.minin.diarybackend.services.codes.IVerificationCodeService;
 import com.minin.diarybackend.services.codes.results.VerificationCodeSuccessResult;
 import com.minin.diarybackend.services.credentials.ICredentialsService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Verification codes")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/verification")

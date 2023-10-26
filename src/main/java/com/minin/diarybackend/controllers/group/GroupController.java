@@ -5,6 +5,7 @@ import com.minin.diarybackend.dtos.GroupDto;
 import com.minin.diarybackend.dtos.StudentDto;
 import com.minin.diarybackend.models.Group;
 import com.minin.diarybackend.services.group.IGroupService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Groups")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/groups")

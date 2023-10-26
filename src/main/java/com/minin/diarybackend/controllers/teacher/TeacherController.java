@@ -2,12 +2,14 @@ package com.minin.diarybackend.controllers.teacher;
 
 import com.minin.diarybackend.dtos.TeacherDto;
 import com.minin.diarybackend.services.teacher.ITeacherService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Teachers")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/teachers")
