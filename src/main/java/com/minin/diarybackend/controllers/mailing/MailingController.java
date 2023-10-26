@@ -1,9 +1,11 @@
 package com.minin.diarybackend.controllers.mailing;
 
 import com.minin.diarybackend.config.security.custom.CustomPrincipal;
+import com.minin.diarybackend.controllers.mailing.requests.EmailSendRequest;
 import com.minin.diarybackend.services.mailing.IMailingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +18,12 @@ public class MailingController {
 
     @PostMapping("email")
     public void sendEmailVerificationCode(CustomPrincipal principal) {
-        mailingService.sendEmailVerificationCode(principal.getIdentityId());
+        mailingService.sendVerificationCode(principal.getIdentityId());
+    }
+
+    @PostMapping
+    public void sendVerificationCode(@RequestBody EmailSendRequest emailSendRequest) {
+        mailingService.sendVerificationCode(emailSendRequest);
     }
 
 }

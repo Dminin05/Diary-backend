@@ -21,6 +21,9 @@ public class VerificationCode {
     @Column(name = "value")
     private String value;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "expires_at")
     private LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15);
 

@@ -1,11 +1,14 @@
 package com.minin.diarybackend.services.codes;
 
+import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.models.VerificationCode;
 import com.minin.diarybackend.repositories.VerificationCodeRepository;
+import com.minin.diarybackend.services.codes.results.VerificationCodeSuccessResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -28,6 +31,21 @@ public class VerificationCodeService implements IVerificationCodeService {
     @Override
     public void deleteById(UUID id) {
         verificationCodeRepository.deleteById(id);
+    }
+
+    @Override
+    public VerificationCodeSuccessResult isVerificationCodeCorrect(String value) {
+
+        VerificationCode verificationCode = findByValue(value);
+
+        boolean isVerificationCodeValid = verificationCode.getExpiresAt().isAfter(LocalDateTime.now());
+
+        if (verificationCode.getValue().equals(value) && isVerificationCodeValid) {
+            deleteById(verificationCode.getId());
+            return new VerificationCodeSuccessResult(verificationCode.getEmail(), true);
+        }
+
+        throw new BadRequestException("wrong_verification_code");
     }
 
 }

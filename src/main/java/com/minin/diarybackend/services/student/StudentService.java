@@ -1,6 +1,6 @@
 package com.minin.diarybackend.services.student;
 
-import com.minin.diarybackend.controllers.auth.requests.StudentRegisterRequest;
+import com.minin.diarybackend.controllers.auth.requests.registration.StudentRegisterRequest;
 import com.minin.diarybackend.dtos.StudentDto;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.mappers.StudentMapper;

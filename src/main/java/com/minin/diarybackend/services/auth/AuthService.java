@@ -1,9 +1,11 @@
 package com.minin.diarybackend.services.auth;
 
-import com.minin.diarybackend.controllers.auth.requests.AuthRequest;
-import com.minin.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
-import com.minin.diarybackend.controllers.auth.requests.StudentRegisterRequest;
-import com.minin.diarybackend.controllers.auth.requests.TeacherRegisterRequest;
+import com.minin.diarybackend.controllers.auth.requests.authenticate.AuthRequest;
+import com.minin.diarybackend.controllers.auth.requests.passwords.ChangePasswordRequest;
+import com.minin.diarybackend.controllers.auth.requests.passwords.RecoveryPasswordRequest;
+import com.minin.diarybackend.controllers.auth.requests.registration.IdentityRegisterRequest;
+import com.minin.diarybackend.controllers.auth.requests.registration.StudentRegisterRequest;
+import com.minin.diarybackend.controllers.auth.requests.registration.TeacherRegisterRequest;
 import com.minin.diarybackend.controllers.auth.responses.TokenResponse;
 import com.minin.diarybackend.exceptions.AuthenticationException;
 import com.minin.diarybackend.exceptions.BadRequestException;
@@ -29,6 +31,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,7 +121,12 @@ public class AuthService implements IAuthService {
     public TokenResponse authenticate(AuthRequest authRequest) {
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authRequest.getUsername(),
+                            authRequest.getPassword()
+                    )
+            );
         } catch (BadCredentialsException e) {
             throw new AuthenticationException("wrong_login_or_password");
         }
@@ -152,6 +160,54 @@ public class AuthService implements IAuthService {
         saveNewRefreshToken(newRefreshToken, username);
 
         return new TokenResponse(newAccessToken, newRefreshToken);
+    }
+
+    @Override
+    @Transactional
+    public TokenResponse changePassword(UUID identityId, ChangePasswordRequest changePasswordRequest) {
+
+        Credentials credentials = credentialsService.findByIdentityId(identityId);
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            credentials.getUsername(),
+                            changePasswordRequest.getOldPassword()
+                    )
+            );
+        } catch (BadCredentialsException e) {
+            throw new AuthenticationException("wrong_old_password");
+        }
+
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmNewPassword())) {
+            throw new BadRequestException("passwords_mismatch");
+        }
+
+        credentials.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        credentialsService.update(credentials);
+
+        UserDetails userDetails = loadUserByUsername(credentials.getUsername());
+
+        String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
+        String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
+
+        saveNewRefreshToken(refreshToken, userDetails.getUsername());
+
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    @Override
+    @Transactional
+    public void passwordRecovery(UUID credentialsId, RecoveryPasswordRequest recoveryPasswordRequest) {
+
+        Credentials credentials = credentialsService.findById(credentialsId);
+
+        if (!recoveryPasswordRequest.getNewPassword().equals(recoveryPasswordRequest.getConfirmNewPassword())) {
+            throw new BadRequestException("passwords_mismatch");
+        }
+
+        credentials.setPassword(passwordEncoder.encode(recoveryPasswordRequest.getNewPassword()));
+        credentialsService.update(credentials);
     }
 
     private void saveNewRefreshToken(String token, String username) {

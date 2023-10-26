@@ -1,7 +1,10 @@
 package com.minin.diarybackend.controllers.auth;
 
-import com.minin.diarybackend.controllers.auth.requests.AuthRequest;
-import com.minin.diarybackend.controllers.auth.requests.IdentityRegisterRequest;
+import com.minin.diarybackend.config.security.custom.CustomPrincipal;
+import com.minin.diarybackend.controllers.auth.requests.authenticate.AuthRequest;
+import com.minin.diarybackend.controllers.auth.requests.passwords.ChangePasswordRequest;
+import com.minin.diarybackend.controllers.auth.requests.passwords.RecoveryPasswordRequest;
+import com.minin.diarybackend.controllers.auth.requests.registration.IdentityRegisterRequest;
 import com.minin.diarybackend.controllers.auth.responses.TokenResponse;
 import com.minin.diarybackend.exceptions.AuthenticationException;
 import com.minin.diarybackend.services.auth.IAuthService;
@@ -9,12 +12,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,13 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("refresh")
-    public TokenResponse refresh(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-
-        String token = Arrays.stream(httpRequest.getCookies())
-                .filter(c -> c.getName().equals("refresh-token"))
-                .findFirst()
-                .orElseThrow(() -> new AuthenticationException("refresh_token_is_not_present"))
-                .getValue();
+    public TokenResponse refresh(@CookieValue(name = "refresh-token") String token, HttpServletResponse httpResponse) {
 
         TokenResponse result = authService.refreshToken(token);
 
@@ -63,6 +59,16 @@ public class AuthController {
         httpResponse.addCookie(cookie);
 
         return result;
+    }
+
+    @PostMapping("change-password")
+    public TokenResponse changePassword(CustomPrincipal principal, @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return authService.changePassword(principal.getIdentityId(), changePasswordRequest);
+    }
+
+    @PostMapping("password-recovery")
+    public void passwordRecovery(@CookieValue(name = "credentials_id") UUID credentialsId, @RequestBody RecoveryPasswordRequest recoveryPasswordRequest) {
+        authService.passwordRecovery(credentialsId, recoveryPasswordRequest);
     }
 
 }

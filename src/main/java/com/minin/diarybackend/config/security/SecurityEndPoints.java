@@ -5,7 +5,10 @@ public class SecurityEndPoints {
     // permit_all
     static final String[] AUTH_WHITELIST_AUTH = {
             "api/v1/auth/authenticate",
-            "api/v1/auth/refresh"
+            "api/v1/auth/refresh",
+            "api/v1/auth/password-recovery",
+            "api/v1/mailing",
+            "api/v1/verification/verify-recovering"
     };
 
     // has_role("ADMIN")
