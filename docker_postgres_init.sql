@@ -244,6 +244,30 @@ create table verification_codes
 alter table verification_codes
     owner to postgres;
 
+create table schedule
+(
+    id         uuid    not null
+        constraint schedule_pk
+            primary key,
+    teacher_id uuid    not null
+        constraint teacher_fk
+            references teacher,
+    group_id   uuid    not null
+        constraint group_fk
+            references groups,
+    subject_id uuid    not null
+        constraint subject_fk
+            references subjects,
+    pair       integer not null,
+    status     text    not null,
+    date       date    not null
+);
+
+alter table schedule
+    owner to postgres;
+
+
+
 
 
 
