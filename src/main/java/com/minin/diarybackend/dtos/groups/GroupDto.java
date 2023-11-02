@@ -1,5 +1,7 @@
-package com.minin.diarybackend.dtos;
+package com.minin.diarybackend.dtos.groups;
 
+import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.SubjectDto;
 import lombok.Data;
 
 import java.util.List;

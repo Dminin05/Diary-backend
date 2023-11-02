@@ -1,7 +1,7 @@
 package com.minin.diarybackend.controllers.group;
 
 import com.minin.diarybackend.controllers.group.requests.GroupCreateRequest;
-import com.minin.diarybackend.dtos.GroupDto;
+import com.minin.diarybackend.dtos.groups.GroupDto;
 import com.minin.diarybackend.dtos.StudentDto;
 import com.minin.diarybackend.models.Group;
 import com.minin.diarybackend.services.group.IGroupService;

@@ -34,4 +34,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppError(HttpStatus.CONFLICT.value(), ex.getMessage()), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<AppError> handleConflictException(ConflictException ex) {
+        return new ResponseEntity<>(new AppError(HttpStatus.CONFLICT.value(), ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
 }
