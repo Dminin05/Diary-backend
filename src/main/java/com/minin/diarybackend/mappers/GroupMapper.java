@@ -2,7 +2,7 @@ package com.minin.diarybackend.mappers;
 
 import com.minin.diarybackend.dtos.groups.GroupBaseInfo;
 import com.minin.diarybackend.dtos.groups.GroupDto;
-import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDto;
 import com.minin.diarybackend.dtos.SubjectDto;
 import com.minin.diarybackend.models.Group;
 import org.mapstruct.Mapper;

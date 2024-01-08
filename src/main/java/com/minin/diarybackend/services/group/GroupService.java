@@ -2,23 +2,27 @@ package com.minin.diarybackend.services.group;
 
 import com.minin.diarybackend.controllers.group.requests.GroupCreateRequest;
 import com.minin.diarybackend.dtos.groups.GroupDto;
-import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.marks.AvgMark;
+import com.minin.diarybackend.dtos.students.StudentDto;
 import com.minin.diarybackend.dtos.SubjectDto;
+import com.minin.diarybackend.dtos.students.StudentDtoWithScore;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.mappers.GroupMapper;
 import com.minin.diarybackend.mappers.StudentMapper;
 import com.minin.diarybackend.mappers.SubjectMapper;
 import com.minin.diarybackend.models.Group;
+import com.minin.diarybackend.models.Student;
 import com.minin.diarybackend.models.Subject;
 import com.minin.diarybackend.repositories.GroupRepository;
+import com.minin.diarybackend.services.marks.IMarkService;
 import com.minin.diarybackend.services.subjects.ISubjectsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +35,13 @@ public class GroupService implements IGroupService {
     private final StudentMapper studentMapper;
     private final GroupMapper groupMapper;
     private final SubjectMapper subjectMapper;
+
+    private IMarkService markService; // todo: dependencies are cycle, change it (maybe in mark service)
+
+    @Autowired
+    public void setMarkService(@Lazy IMarkService markService) {
+        this.markService = markService;
+    }
 
     @Override
     public Group findById(UUID id) {
@@ -59,6 +70,25 @@ public class GroupService implements IGroupService {
         return group.getStudents().stream()
                 .map(studentMapper::entityToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentDtoWithScore> findStudentsByRating(UUID groupId) {
+
+        Group group = findById(groupId);
+        List<Student> students = group.getStudents();
+        List<StudentDtoWithScore> result = new ArrayList<>();
+
+        for (Student student : students) {
+
+            AvgMark avgMark = markService.findAvgMarkByStudentId(student.getId());
+            StudentDtoWithScore studentDtoWithScore = studentMapper.entityToDtoWithScore(student, avgMark.getScore());
+            result.add(studentDtoWithScore);
+        }
+
+        result.sort(Comparator.comparing(StudentDtoWithScore::getScore).reversed());
+
+        return result;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.minin.diarybackend.services.marks;
 import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AvgMark;
-import com.minin.diarybackend.dtos.marks.AvgMarkBySubjectDto;
 import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.models.Mark;
 
@@ -22,9 +21,8 @@ public interface IMarkService {
 
     List<MarkDto> findAllMarksByStudentIdAndSubjectId(UUID studentId, UUID subjectId);
 
-    AvgMarkBySubjectDto findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId);
+    AvgMark findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId);
 
     AvgMark findAvgMarkByStudentId(UUID studentId);
-
 
 }

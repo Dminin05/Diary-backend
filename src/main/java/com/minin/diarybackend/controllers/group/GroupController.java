@@ -2,7 +2,8 @@ package com.minin.diarybackend.controllers.group;
 
 import com.minin.diarybackend.controllers.group.requests.GroupCreateRequest;
 import com.minin.diarybackend.dtos.groups.GroupDto;
-import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDtoWithScore;
 import com.minin.diarybackend.models.Group;
 import com.minin.diarybackend.services.group.IGroupService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,6 +35,11 @@ public class GroupController {
     @GetMapping("{groupId}/students")
     public List<StudentDto> findAllStudentsInGroup(@PathVariable UUID groupId) {
         return groupService.findAllStudentsInGroupById(groupId);
+    }
+
+    @GetMapping("{groupId}/students/rating")
+    public List<StudentDtoWithScore> findAllStudentsInGroupByRating(@PathVariable UUID groupId) {
+        return groupService.findStudentsByRating(groupId);
     }
 
     @PostMapping("new")

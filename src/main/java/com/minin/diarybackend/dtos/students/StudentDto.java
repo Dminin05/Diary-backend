@@ -1,4 +1,4 @@
-package com.minin.diarybackend.dtos;
+package com.minin.diarybackend.dtos.students;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

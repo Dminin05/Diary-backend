@@ -2,7 +2,8 @@ package com.minin.diarybackend.services.group;
 
 import com.minin.diarybackend.controllers.group.requests.GroupCreateRequest;
 import com.minin.diarybackend.dtos.groups.GroupDto;
-import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDtoWithScore;
 import com.minin.diarybackend.models.Group;
 
 import java.util.List;
@@ -23,5 +24,7 @@ public interface IGroupService {
     void addSubjectToTheGroupById(UUID groupId, UUID subjectId);
 
     void removeSubjectFromGroupById(UUID groupId, UUID subjectId);
+
+    List<StudentDtoWithScore> findStudentsByRating(UUID groupOd);
 
 }

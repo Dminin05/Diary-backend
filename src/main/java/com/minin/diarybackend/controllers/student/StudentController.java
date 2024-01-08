@@ -1,8 +1,7 @@
 package com.minin.diarybackend.controllers.student;
 
-import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDto;
 import com.minin.diarybackend.mappers.StudentMapper;
-import com.minin.diarybackend.models.Student;
 import com.minin.diarybackend.services.student.IStudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
