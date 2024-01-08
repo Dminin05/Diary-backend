@@ -2,16 +2,11 @@ package com.minin.diarybackend.services.marks;
 
 import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
-import com.minin.diarybackend.dtos.StudentDto;
-import com.minin.diarybackend.dtos.SubjectDto;
 import com.minin.diarybackend.dtos.marks.AvgMark;
-import com.minin.diarybackend.dtos.marks.AvgMarkBySubjectDto;
 import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.mappers.MarkMapper;
-import com.minin.diarybackend.mappers.StudentMapper;
-import com.minin.diarybackend.mappers.SubjectMapper;
 import com.minin.diarybackend.models.Mark;
 import com.minin.diarybackend.models.Student;
 import com.minin.diarybackend.models.Subject;
@@ -35,8 +30,6 @@ public class MarkService implements IMarkService {
     private final MarkRepository markRepository;
 
     private final MarkMapper markMapper;
-    private final StudentMapper studentMapper;
-    private final SubjectMapper subjectMapper;
 
     private final ITeacherService teacherService;
     private final IStudentService studentService;
@@ -95,15 +88,9 @@ public class MarkService implements IMarkService {
     }
 
     @Override
-    public AvgMarkBySubjectDto findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
+    public AvgMark findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
 
-        Student student = studentService.findById(studentId);
-        StudentDto studentDto = studentMapper.entityToDto(student);
-
-        Subject subject = subjectsService.findById(subjectId);
-        SubjectDto subjectDto = subjectMapper.entityToDto(subject);
-
-        List<Mark> marks = markRepository.findMarksByStudentId(studentId);
+        List<Mark> marks = markRepository.findMarksByStudentIdAndSubjectId(studentId, subjectId);
 
         int counter = 0;
         double sum = 0;
@@ -119,7 +106,7 @@ public class MarkService implements IMarkService {
         }
 
         if (counter == 0) {
-            return new AvgMarkBySubjectDto(studentDto, subjectDto, 0);
+            return new AvgMark(0);
         }
 
         double result = sum/counter;
@@ -132,15 +119,12 @@ public class MarkService implements IMarkService {
             throw new NumberFormatException("error_casting_to_the_required_type");
         }
 
-        return new AvgMarkBySubjectDto(studentDto, subjectDto, roundedResult);
+        return new AvgMark(roundedResult);
     }
 
     @Override
     public AvgMark findAvgMarkByStudentId(UUID studentId) {
 
-        Student student = studentService.findById(studentId);
-        StudentDto studentDto = studentMapper.entityToDto(student);
-
         List<Mark> marks = markRepository.findMarksByStudentId(studentId);
 
         int counter = 0;
@@ -157,7 +141,7 @@ public class MarkService implements IMarkService {
         }
 
         if (counter == 0) {
-            return new AvgMark(studentDto, 0);
+            return new AvgMark(0);
         }
 
         double result = sum/counter;
@@ -170,7 +154,7 @@ public class MarkService implements IMarkService {
             throw new NumberFormatException("error_casting_to_the_required_type");
         }
 
-        return new AvgMark(studentDto, roundedResult);
+        return new AvgMark(roundedResult);
     }
 
 }

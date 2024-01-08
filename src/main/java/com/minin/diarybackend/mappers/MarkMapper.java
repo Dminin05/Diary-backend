@@ -1,6 +1,6 @@
 package com.minin.diarybackend.mappers;
 
-import com.minin.diarybackend.dtos.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentDto;
 import com.minin.diarybackend.dtos.SubjectDto;
 import com.minin.diarybackend.dtos.TeacherDto;
 import com.minin.diarybackend.dtos.marks.MarkDto;
