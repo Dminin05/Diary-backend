@@ -4,15 +4,15 @@ import com.minin.diarybackend.config.security.custom.CustomPrincipal;
 import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AvgMark;
+import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
 import com.minin.diarybackend.dtos.marks.MarkDto;
-import com.minin.diarybackend.models.Teacher;
 import com.minin.diarybackend.services.marks.IMarkService;
-import com.minin.diarybackend.services.teacher.ITeacherService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Tag(name = "Marks")
@@ -22,15 +22,11 @@ import java.util.UUID;
 public class MarkController {
 
     private final IMarkService markService;
-    private final ITeacherService teacherService;
 
     @PostMapping("new")
-    public MarkDto createNewMark(CustomPrincipal principal, @RequestBody MarkCreateRequest markCreateRequest) {
-
-        Teacher teacher = teacherService.findByIdentityId(principal.getIdentityId());
-        markCreateRequest.setTeacherId(teacher.getId());
-
-        return markService.create(markCreateRequest);
+    public void createNewMark(CustomPrincipal principal, @RequestBody MarkCreateRequest markCreateRequest) {
+        markCreateRequest.setIdentityId(principal.getIdentityId());
+        markService.create(markCreateRequest);
     }
 
     @PostMapping("{markId}")
@@ -39,13 +35,8 @@ public class MarkController {
     }
 
     @GetMapping("{studentId}")
-    public List<MarkDto> findMarksByStudentId(@PathVariable UUID studentId) {
+    public Map<String, List<MarkBaseInfo>> findMarksByStudentId(@PathVariable UUID studentId) {
         return markService.findAllMarksByStudentId(studentId);
-    }
-
-    @GetMapping("{studentId}/{subjectId}")
-    public List<MarkDto> findMarksByStudentIdAndSubjectId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
-        return markService.findAllMarksByStudentIdAndSubjectId(studentId, subjectId);
     }
 
     @GetMapping("avg/{studentId}")

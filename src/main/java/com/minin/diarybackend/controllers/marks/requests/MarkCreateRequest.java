@@ -7,9 +7,10 @@ import java.util.UUID;
 @Data
 public class MarkCreateRequest {
 
-    private UUID teacherId = null;
+    private UUID identityId = null;
     private UUID studentId;
     private UUID subjectId;
+    private UUID scheduleId;
     private String mark = "";
 
 }
