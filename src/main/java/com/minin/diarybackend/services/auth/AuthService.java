@@ -11,6 +11,7 @@ import com.minin.diarybackend.exceptions.AuthenticationException;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.models.*;
 import com.minin.diarybackend.models.types.IdentityType;
+import com.minin.diarybackend.properties.PatternProperties;
 import com.minin.diarybackend.repositories.TokenRepository;
 import com.minin.diarybackend.services.credentials.ICredentialsService;
 import com.minin.diarybackend.services.identity.IIdentityService;
@@ -32,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +47,7 @@ public class AuthService implements IAuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
+    private final PatternProperties patternProperties;
 
     private AuthenticationManager authenticationManager;
 
@@ -62,16 +65,20 @@ public class AuthService implements IAuthService {
         Identity identity = new Identity();
         String username = "";
 
+        if (!isEmail(identityCreateRequest.getEmail())) {
+            throw new BadRequestException("invalid_email");
+        }
+
+        if (!identityCreateRequest.getPassword().equals(identityCreateRequest.getConfirmPassword())) {
+            throw new BadRequestException("passwords_mismatch");
+        }
+
         if (credentialsService.isCredentialsExistsByUsername(identityCreateRequest.getUsername())) {
             throw new BadRequestException("this_username_already_exists");
         }
 
         if (credentialsService.isCredentialsExistsByEmail(identityCreateRequest.getEmail())) {
             throw new BadRequestException("this_email_already_exists");
-        }
-
-        if (!identityCreateRequest.getPassword().equals(identityCreateRequest.getConfirmPassword())) {
-            throw new BadRequestException("passwords_mismatch");
         }
 
         switch (identityCreateRequest) {
@@ -235,6 +242,10 @@ public class AuthService implements IAuthService {
                         .map(role -> new SimpleGrantedAuthority(role.getName()))
                         .collect(Collectors.toList())
         );
+    }
+
+    private boolean isEmail(String s) {
+        return patternProperties.getEmailPattern().matcher(s).matches();
     }
 
 }
