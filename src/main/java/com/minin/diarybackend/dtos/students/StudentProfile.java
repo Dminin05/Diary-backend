@@ -5,9 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class StudentDto {
+public class StudentProfile {
     private String firstName;
     private String lastName;
     private String patronymic;
     private String groupTitle;
+    private String email;
+    private Boolean isVerified;
 }

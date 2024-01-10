@@ -2,6 +2,7 @@ package com.minin.diarybackend.services.student;
 
 import com.minin.diarybackend.controllers.auth.requests.registration.StudentRegisterRequest;
 import com.minin.diarybackend.dtos.students.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentProfile;
 import com.minin.diarybackend.models.Student;
 
 import java.util.List;
@@ -12,6 +13,8 @@ public interface IStudentService {
     List<StudentDto> findAll();
 
     Student findById(UUID id);
+
+    StudentProfile findProfileByIdentityId(UUID identityId);
 
     Student create(StudentRegisterRequest createRequest);
 

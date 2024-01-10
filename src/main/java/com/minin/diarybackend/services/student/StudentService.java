@@ -2,11 +2,14 @@ package com.minin.diarybackend.services.student;
 
 import com.minin.diarybackend.controllers.auth.requests.registration.StudentRegisterRequest;
 import com.minin.diarybackend.dtos.students.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentProfile;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.mappers.StudentMapper;
+import com.minin.diarybackend.models.Credentials;
 import com.minin.diarybackend.models.Group;
 import com.minin.diarybackend.models.Student;
 import com.minin.diarybackend.repositories.StudentRepository;
+import com.minin.diarybackend.services.credentials.ICredentialsService;
 import com.minin.diarybackend.services.group.IGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ public class StudentService implements IStudentService{
 
     private final StudentRepository studentRepository;
     private final IGroupService groupService;
+    private final ICredentialsService credentialsService;
 
     private final StudentMapper studentMapper;
 
@@ -35,6 +39,15 @@ public class StudentService implements IStudentService{
 
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("student_not_found"));
+    }
+
+    @Override
+    public StudentProfile findProfileByIdentityId(UUID identityId) {
+
+        Credentials credentials = credentialsService.findByIdentityId(identityId);
+        Student student = credentials.getIdentity().getStudent();
+
+        return studentMapper.entityToStudentProfile(student, credentials.getEmail(), credentials.isEmailVerified());
     }
 
     @Override

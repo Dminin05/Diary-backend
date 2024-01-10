@@ -24,15 +24,15 @@ public class ScheduleController {
         scheduleService.create(scheduleCreateRequest);
     }
 
-    @GetMapping("{groupId}")
-    public List<ScheduleDto> findAllSchedulesByDateAndGroupId(
+    @GetMapping("{groupTitle}")
+    public List<ScheduleDto> findAllSchedulesByDateAndGroupTitle(
             @RequestBody ScheduleInfoRequest scheduleInfoRequest,
-            @PathVariable UUID groupId
+            @PathVariable String groupTitle
     ) {
-        return scheduleService.findAllSchedulesByDateAndGroupId(
+        return scheduleService.findAllSchedulesByDateAndGroupTitle(
                 scheduleInfoRequest.getDateFrom(),
                 scheduleInfoRequest.getDateTo(),
-                groupId
+                groupTitle
         );
     }
 

@@ -1,6 +1,8 @@
 package com.minin.diarybackend.controllers.student;
 
+import com.minin.diarybackend.config.security.custom.CustomPrincipal;
 import com.minin.diarybackend.dtos.students.StudentDto;
+import com.minin.diarybackend.dtos.students.StudentProfile;
 import com.minin.diarybackend.mappers.StudentMapper;
 import com.minin.diarybackend.services.student.IStudentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +24,11 @@ public class StudentController {
     @GetMapping
     public List<StudentDto> findAll() {
         return studentService.findAll();
+    }
+
+    @GetMapping("/profile")
+    public StudentProfile findStudentProfile(CustomPrincipal principal) {
+        return studentService.findProfileByIdentityId(principal.getIdentityId());
     }
 
     @GetMapping("{id}")

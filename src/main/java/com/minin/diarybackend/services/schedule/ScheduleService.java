@@ -64,9 +64,9 @@ public class ScheduleService implements IScheduleService {
     }
 
     @Override
-    public List<ScheduleDto> findAllSchedulesByDateAndGroupId(Date dateFrom, Date dateTo, UUID groupId) {
+    public List<ScheduleDto> findAllSchedulesByDateAndGroupTitle(Date dateFrom, Date dateTo, String groupTitle) {
 
-        return scheduleRepository.findAllByDateBetweenAndGroup_id(dateFrom, dateTo, groupId)
+        return scheduleRepository.findAllByDateBetweenAndGroup_Title(dateFrom, dateTo, groupTitle)
                 .stream()
                 .map(scheduleMapper::entityToDto)
                 .toList();
