@@ -32,11 +32,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
+
+    private static final Pattern EMAIL = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     private final ICredentialsService credentialsService;
     private final IIdentityService identityService;
@@ -62,16 +65,20 @@ public class AuthService implements IAuthService {
         Identity identity = new Identity();
         String username = "";
 
+        if (!isEmail(identityCreateRequest.getEmail())) {
+            throw new BadRequestException("invalid_email");
+        }
+
+        if (!identityCreateRequest.getPassword().equals(identityCreateRequest.getConfirmPassword())) {
+            throw new BadRequestException("passwords_mismatch");
+        }
+
         if (credentialsService.isCredentialsExistsByUsername(identityCreateRequest.getUsername())) {
             throw new BadRequestException("this_username_already_exists");
         }
 
         if (credentialsService.isCredentialsExistsByEmail(identityCreateRequest.getEmail())) {
             throw new BadRequestException("this_email_already_exists");
-        }
-
-        if (!identityCreateRequest.getPassword().equals(identityCreateRequest.getConfirmPassword())) {
-            throw new BadRequestException("passwords_mismatch");
         }
 
         switch (identityCreateRequest) {
@@ -235,6 +242,10 @@ public class AuthService implements IAuthService {
                         .map(role -> new SimpleGrantedAuthority(role.getName()))
                         .collect(Collectors.toList())
         );
+    }
+
+    private static boolean isEmail(String s) {
+        return EMAIL.matcher(s).matches();
     }
 
 }
