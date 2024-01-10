@@ -13,6 +13,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
 
     boolean existsByPairAndDateAndTeacher_Id(int pair, Date date, UUID teacherId);
 
-    List<Schedule> findAllByDateBetweenAndGroup_id(Date dateFrom, Date dateTo, UUID group_id);
+    List<Schedule> findAllByDateBetweenAndGroup_Title(Date dateFrom, Date dateTo, String groupTitle);
 
 }

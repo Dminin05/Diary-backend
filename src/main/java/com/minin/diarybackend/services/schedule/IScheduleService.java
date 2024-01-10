@@ -14,6 +14,6 @@ public interface IScheduleService {
 
     Schedule findById(UUID id);
 
-    List<ScheduleDto> findAllSchedulesByDateAndGroupId(Date dateFrom, Date dateTo, UUID groupId);
+    List<ScheduleDto> findAllSchedulesByDateAndGroupTitle(Date dateFrom, Date dateTo, String groupTitle);
 
 }
