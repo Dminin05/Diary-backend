@@ -16,24 +16,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface ScheduleMapper {
 
-    @Mapping(source = "teacher", target = "teacherDto", qualifiedByName = "teacherDto")
-    @Mapping(source = "subject", target = "subjectDto", qualifiedByName = "subjectDto")
-    @Mapping(source = "group", target = "groupBaseInfo", qualifiedByName = "groupBaseInfo")
+    @Mapping(source = "subject.title", target = "subject")
     ScheduleDto entityToDto(Schedule schedule);
-
-    @Named("teacherDto")
-    default TeacherDto teacherToTeacherDto(Teacher teacher) {
-        return Mappers.getMapper(TeacherMapper.class).entityToDto(teacher);
-    }
-
-    @Named("subjectDto")
-    default SubjectDto subjectToSubjectDto(Subject subject) {
-        return Mappers.getMapper(SubjectMapper.class).entityToDto(subject);
-    }
-
-    @Named("groupBaseInfo")
-    default GroupBaseInfo groupToGroupBaseInfo(Group group) {
-        return Mappers.getMapper(GroupMapper.class).entityToBaseInfo(group);
-    }
 
 }

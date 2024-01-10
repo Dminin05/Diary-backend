@@ -1,12 +1,14 @@
 package com.minin.diarybackend.controllers.schedule;
 
 import com.minin.diarybackend.controllers.schedule.requests.ScheduleCreateRequest;
+import com.minin.diarybackend.controllers.schedule.requests.ScheduleInfoRequest;
 import com.minin.diarybackend.dtos.ScheduleDto;
 import com.minin.diarybackend.services.schedule.IScheduleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Schedule")
@@ -22,9 +24,16 @@ public class ScheduleController {
         scheduleService.create(scheduleCreateRequest);
     }
 
-    @GetMapping("{id}")
-    public ScheduleDto findById(@PathVariable UUID id) {
-        return scheduleService.getBaseInfoById(id);
+    @GetMapping("{groupId}")
+    public List<ScheduleDto> findAllSchedulesByDateAndGroupId(
+            @RequestBody ScheduleInfoRequest scheduleInfoRequest,
+            @PathVariable UUID groupId
+    ) {
+        return scheduleService.findAllSchedulesByDateAndGroupId(
+                scheduleInfoRequest.getDateFrom(),
+                scheduleInfoRequest.getDateTo(),
+                groupId
+        );
     }
 
 }

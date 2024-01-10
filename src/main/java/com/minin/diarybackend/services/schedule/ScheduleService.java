@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -63,11 +64,12 @@ public class ScheduleService implements IScheduleService {
     }
 
     @Override
-    public ScheduleDto getBaseInfoById(UUID id) {
+    public List<ScheduleDto> findAllSchedulesByDateAndGroupId(Date dateFrom, Date dateTo, UUID groupId) {
 
-        Schedule schedule = findById(id);
-
-        return scheduleMapper.entityToDto(schedule);
+        return scheduleRepository.findAllByDateBetweenAndGroup_id(dateFrom, dateTo, groupId)
+                .stream()
+                .map(scheduleMapper::entityToDto)
+                .toList();
     }
 
     private boolean existsByTeacherIdAndPairAndDate(UUID teacherId, int pair, Date date) {
