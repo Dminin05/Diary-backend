@@ -3,24 +3,21 @@ package com.minin.diarybackend.services.marks;
 import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AvgMark;
-import com.minin.diarybackend.dtos.marks.MarkDto;
+import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.mappers.MarkMapper;
-import com.minin.diarybackend.models.Mark;
-import com.minin.diarybackend.models.Student;
-import com.minin.diarybackend.models.Subject;
-import com.minin.diarybackend.models.Teacher;
+import com.minin.diarybackend.models.*;
 import com.minin.diarybackend.repositories.MarkRepository;
+import com.minin.diarybackend.services.identity.IIdentityService;
+import com.minin.diarybackend.services.schedule.IScheduleService;
 import com.minin.diarybackend.services.student.IStudentService;
 import com.minin.diarybackend.services.subjects.ISubjectsService;
-import com.minin.diarybackend.services.teacher.ITeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +28,10 @@ public class MarkService implements IMarkService {
 
     private final MarkMapper markMapper;
 
-    private final ITeacherService teacherService;
     private final IStudentService studentService;
     private final ISubjectsService subjectsService;
+    private final IIdentityService identityService;
+    private final IScheduleService scheduleService;
 
     @Override
     public Mark findById(UUID id) {
@@ -42,20 +40,23 @@ public class MarkService implements IMarkService {
     }
 
     @Override
-    public MarkDto create(MarkCreateRequest markCreateRequest) {
+    public void create(MarkCreateRequest markCreateRequest) {
 
-        Teacher teacher = teacherService.findById(markCreateRequest.getTeacherId());
+        Teacher teacher = identityService.findById(markCreateRequest.getIdentityId()).getTeacher();
         Student student = studentService.findById(markCreateRequest.getStudentId());
         Subject subject = subjectsService.findById(markCreateRequest.getSubjectId());
+        Schedule schedule = scheduleService.findById(markCreateRequest.getScheduleId());
+
+        if (!schedule.getSubject().getTitle().equals(subject.getTitle())) {
+            throw new BadRequestException("mismatch_subjects_in_schedule");
+        }
 
         if (!student.getGroup().getSubjects().contains(subject)) {
             throw new BadRequestException("student_does_not_has_this_subject");
         }
 
-        Mark mark = markMapper.requestToEntity(markCreateRequest.getMark(), teacher, student, subject);
+        Mark mark = markMapper.requestToEntity(markCreateRequest.getMark(), teacher, student, subject, schedule);
         markRepository.save(mark);
-
-        return markMapper.entityToDto(mark);
     }
 
     @Override
@@ -68,23 +69,25 @@ public class MarkService implements IMarkService {
     }
 
     @Override
-    public List<MarkDto> findAllMarksByStudentId(UUID studentId) {
+    public Map<String, List<MarkBaseInfo>> findAllMarksByStudentId(UUID studentId) {
 
         List<Mark> marks = markRepository.findMarksByStudentId(studentId);
+        Map<String, List<MarkBaseInfo>> map = new HashMap<>();
 
-        return marks.stream()
-                .map(markMapper::entityToDto)
-                .toList();
-    }
+        for (Mark mark : marks) {
 
-    @Override
-    public List<MarkDto> findAllMarksByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
+            Schedule schedule = mark.getSchedule();
+            String subjectTitle = schedule.getSubject().getTitle();
+            MarkBaseInfo markBaseInfo = new MarkBaseInfo(schedule.getDate(), mark.getMark());
 
-        List<Mark> marks =  markRepository.findMarksByStudentIdAndSubjectId(studentId, subjectId);
+            if (!map.containsKey(subjectTitle)) {
+                map.put(subjectTitle, new ArrayList<>());
+            }
 
-        return marks.stream()
-                .map(markMapper::entityToDto)
-                .toList();
+            map.get(subjectTitle).add(markBaseInfo);
+        }
+
+        return map;
     }
 
     @Override

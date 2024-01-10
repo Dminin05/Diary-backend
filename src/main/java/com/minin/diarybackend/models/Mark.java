@@ -29,6 +29,10 @@ public class Mark {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
+
     @Column(name = "mark")
     private String mark;
 
