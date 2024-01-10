@@ -11,6 +11,7 @@ import com.minin.diarybackend.exceptions.AuthenticationException;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.models.*;
 import com.minin.diarybackend.models.types.IdentityType;
+import com.minin.diarybackend.properties.PatternProperties;
 import com.minin.diarybackend.repositories.TokenRepository;
 import com.minin.diarybackend.services.credentials.ICredentialsService;
 import com.minin.diarybackend.services.identity.IIdentityService;
@@ -39,8 +40,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthService implements IAuthService {
 
-    private static final Pattern EMAIL = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
     private final ICredentialsService credentialsService;
     private final IIdentityService identityService;
     private final IStudentService studentService;
@@ -48,6 +47,7 @@ public class AuthService implements IAuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
+    private final PatternProperties patternProperties;
 
     private AuthenticationManager authenticationManager;
 
@@ -244,8 +244,8 @@ public class AuthService implements IAuthService {
         );
     }
 
-    private static boolean isEmail(String s) {
-        return EMAIL.matcher(s).matches();
+    private boolean isEmail(String s) {
+        return patternProperties.getEmailPattern().matcher(s).matches();
     }
 
 }
