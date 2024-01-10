@@ -1,5 +1,6 @@
 package com.minin.diarybackend.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,6 +10,7 @@ public class AppError {
 
     private int status;
     private String message;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Europe/Moscow")
     private Date timestamp;
 
     public AppError(int status, String message) {
