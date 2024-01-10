@@ -4,6 +4,8 @@ import com.minin.diarybackend.controllers.schedule.requests.ScheduleCreateReques
 import com.minin.diarybackend.dtos.ScheduleDto;
 import com.minin.diarybackend.models.Schedule;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public interface IScheduleService {
@@ -12,6 +14,6 @@ public interface IScheduleService {
 
     Schedule findById(UUID id);
 
-    ScheduleDto getBaseInfoById(UUID id);
+    List<ScheduleDto> findAllSchedulesByDateAndGroupId(Date dateFrom, Date dateTo, UUID groupId);
 
 }
