@@ -17,8 +17,6 @@ public interface ITeacherService {
 
     Teacher create(TeacherRegisterRequest createRequest);
 
-    Teacher findByIdentityId(UUID identityId);
-
     void deleteById(UUID id);
 
     void addGroupToTeacher(UUID teacherId, UUID groupId);
