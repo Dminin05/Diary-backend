@@ -37,3 +37,6 @@ spring:
     sender:
       email: "Dm-minin05@yandex.ru"
       text: "Dm-minin05"
+
+  patterns:
+    email-pattern: "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$"

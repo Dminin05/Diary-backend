@@ -53,12 +53,6 @@ public class TeacherService implements ITeacherService{
     }
 
     @Override
-    public Teacher findByIdentityId(UUID identityId) {
-        return identityService.findById(identityId)
-                .getTeacher();
-    }
-
-    @Override
     public Teacher create(TeacherRegisterRequest createRequest) {
 
         Teacher teacher = new Teacher();
