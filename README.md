@@ -21,3 +21,10 @@
 ```
 ### or
    ![Alt text](src/main/resources/img/gradle_task.png?)
+### 3. Docker compose
+```sh
+   docker compose up
+```
+
+## Swagger documentation
+#### After start project you may found documentation here -> http://localhost:8080/diary/swagger-ui/index.html
