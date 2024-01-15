@@ -20,7 +20,7 @@ spring:
     access-secret: ""
     refresh-secret: ""
     life-time: 30m
-    refresh-life-time: 1M
+    refresh-life-time: 30D
 
   mail:
     host: smtp.yandex.ru
