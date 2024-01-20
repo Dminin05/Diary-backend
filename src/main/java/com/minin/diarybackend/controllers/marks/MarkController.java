@@ -5,7 +5,6 @@ import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AvgMark;
 import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
-import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.services.marks.IMarkService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -42,11 +41,6 @@ public class MarkController {
     @GetMapping("avg/{studentId}")
     public AvgMark findAvgMarkByStudentId(@PathVariable UUID studentId) {
         return markService.findAvgMarkByStudentId(studentId);
-    }
-
-    @GetMapping("avg/{studentId}/{subjectId}")
-    public AvgMark findAvgMarkByStudentIdAndSubjectId(@PathVariable UUID studentId, @PathVariable UUID subjectId) {
-        return markService.findAvgMarkByStudentIdAndSubjectId(studentId, subjectId);
     }
 
 }

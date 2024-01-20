@@ -12,6 +12,4 @@ public interface MarkRepository extends JpaRepository<Mark, UUID> {
 
     List<Mark> findMarksByStudentId(UUID studentId);
 
-    List<Mark> findMarksByStudentIdAndSubjectId(UUID studentId, UUID subjectId);
-
 }
