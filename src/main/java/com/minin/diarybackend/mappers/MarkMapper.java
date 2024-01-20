@@ -9,10 +9,9 @@ public interface MarkMapper {
 
     @Mapping(source = "teacher", target = "teacher")
     @Mapping(source = "student", target = "student")
-    @Mapping(source = "subject", target = "subject")
     @Mapping(source = "schedule", target = "schedule")
     @Mapping(source = "mark", target = "mark")
     @Mapping(target = "id", ignore = true)
-    Mark requestToEntity(String mark, Teacher teacher, Student student, Subject subject, Schedule schedule);
+    Mark requestToEntity(String mark, Teacher teacher, Student student, Schedule schedule);
 
 }

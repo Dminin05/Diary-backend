@@ -29,7 +29,6 @@ public class MarkService implements IMarkService {
     private final MarkMapper markMapper;
 
     private final IStudentService studentService;
-    private final ISubjectsService subjectsService;
     private final IIdentityService identityService;
     private final IScheduleService scheduleService;
 
@@ -44,18 +43,13 @@ public class MarkService implements IMarkService {
 
         Teacher teacher = identityService.findById(markCreateRequest.getIdentityId()).getTeacher();
         Student student = studentService.findById(markCreateRequest.getStudentId());
-        Subject subject = subjectsService.findById(markCreateRequest.getSubjectId());
         Schedule schedule = scheduleService.findById(markCreateRequest.getScheduleId());
 
-        if (!schedule.getSubject().getTitle().equals(subject.getTitle())) {
-            throw new BadRequestException("mismatch_subjects_in_schedule");
-        }
-
-        if (!student.getGroup().getSubjects().contains(subject)) {
+        if (!student.getGroup().getSubjects().contains(schedule.getSubject())) {
             throw new BadRequestException("student_does_not_has_this_subject");
         }
 
-        Mark mark = markMapper.requestToEntity(markCreateRequest.getMark(), teacher, student, subject, schedule);
+        Mark mark = markMapper.requestToEntity(markCreateRequest.getMark(), teacher, student, schedule);
         markRepository.save(mark);
     }
 
@@ -88,41 +82,6 @@ public class MarkService implements IMarkService {
         }
 
         return map;
-    }
-
-    @Override
-    public AvgMark findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId) {
-
-        List<Mark> marks = markRepository.findMarksByStudentIdAndSubjectId(studentId, subjectId);
-
-        int counter = 0;
-        double sum = 0;
-
-        for (Mark mark : marks) {
-            try {
-                int num = Integer.parseInt(mark.getMark());
-                sum += num;
-                counter++;
-            } catch (NumberFormatException ex) {
-                log.error(ex.toString());
-            }
-        }
-
-        if (counter == 0) {
-            return new AvgMark(0);
-        }
-
-        double result = sum/counter;
-        double roundedResult = 0;
-
-        try {
-            roundedResult = Double.parseDouble(String.format("%.2f", result)
-                    .replace(',', '.'));
-        } catch (NumberFormatException ex) {
-            throw new NumberFormatException("error_casting_to_the_required_type");
-        }
-
-        return new AvgMark(roundedResult);
     }
 
     @Override

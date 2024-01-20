@@ -9,7 +9,6 @@ public class MarkCreateRequest {
 
     private UUID identityId = null;
     private UUID studentId;
-    private UUID subjectId;
     private UUID scheduleId;
     private String mark = "";
 

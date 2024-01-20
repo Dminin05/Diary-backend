@@ -20,8 +20,6 @@ public interface IMarkService {
 
     Map<String, List<MarkBaseInfo>> findAllMarksByStudentId(UUID studentId);
 
-    AvgMark findAvgMarkByStudentIdAndSubjectId(UUID studentId, UUID subjectId);
-
     AvgMark findAvgMarkByStudentId(UUID studentId);
 
 }
