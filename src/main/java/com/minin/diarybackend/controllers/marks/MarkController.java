@@ -3,6 +3,7 @@ package com.minin.diarybackend.controllers.marks;
 import com.minin.diarybackend.config.security.custom.CustomPrincipal;
 import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
+import com.minin.diarybackend.dtos.marks.AttendanceDto;
 import com.minin.diarybackend.dtos.marks.AvgMark;
 import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
 import com.minin.diarybackend.services.marks.IMarkService;
@@ -41,6 +42,11 @@ public class MarkController {
     @GetMapping("avg/{studentId}")
     public AvgMark findAvgMarkByStudentId(@PathVariable UUID studentId) {
         return markService.findAvgMarkByStudentId(studentId);
+    }
+
+    @GetMapping("attendance/{studentId}")
+    public List<AttendanceDto> findAttendanceByStudentId(@PathVariable UUID studentId) {
+        return markService.findAttendanceByStudentId(studentId);
     }
 
 }
