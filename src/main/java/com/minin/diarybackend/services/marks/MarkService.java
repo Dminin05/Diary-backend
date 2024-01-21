@@ -2,6 +2,7 @@ package com.minin.diarybackend.services.marks;
 
 import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
+import com.minin.diarybackend.dtos.marks.AttendanceDto;
 import com.minin.diarybackend.dtos.marks.AvgMark;
 import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
 import com.minin.diarybackend.exceptions.BadRequestException;
@@ -82,6 +83,43 @@ public class MarkService implements IMarkService {
         }
 
         return map;
+    }
+
+    @Override
+    public List<AttendanceDto> findAttendanceByStudentId(UUID studentId) {
+
+        List<Mark> marks = markRepository.findMarksByStudentId(studentId);
+        Map<String, AttendanceDto> map = new HashMap<>();
+        List<AttendanceDto> response = new ArrayList<>();
+
+        for (Mark mark : marks) {
+
+            if (!Character.isDigit(mark.getMark().charAt(0))) {
+
+                String subjectName = mark.getSchedule().getSubject().getTitle();
+
+                if (!map.containsKey(subjectName)) {
+                    map.put(subjectName, new AttendanceDto(0, 0, 0));
+                }
+
+                AttendanceDto oldObj = map.get(subjectName);
+
+                switch (mark.getMark().charAt(0)) {
+                    case 'Б' -> map.get(subjectName).setDueToIllness(oldObj.getDueToIllness() + 1);
+                    case 'Н' -> map.get(subjectName).setWasAbsent(oldObj.getWasAbsent() + 1);
+                    case 'У' -> map.get(subjectName).setRespectful(oldObj.getRespectful() + 1);
+                }
+            }
+
+        }
+
+        for (Map.Entry<String, AttendanceDto> entry : map.entrySet()) {
+            AttendanceDto attendanceDto = entry.getValue();
+            attendanceDto.setSubjectName(entry.getKey());
+            response.add(attendanceDto);
+        }
+
+        return response;
     }
 
     @Override
