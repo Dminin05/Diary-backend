@@ -5,14 +5,13 @@ import com.minin.diarybackend.controllers.marks.requests.MarkCreateRequest;
 import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AttendanceDto;
 import com.minin.diarybackend.dtos.marks.AvgMark;
-import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
+import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.services.marks.IMarkService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Tag(name = "Marks")
@@ -35,7 +34,7 @@ public class MarkController {
     }
 
     @GetMapping("{studentId}")
-    public Map<String, List<MarkBaseInfo>> findMarksByStudentId(@PathVariable UUID studentId) {
+    public List<MarkDto> findMarksByStudentId(@PathVariable UUID studentId) {
         return markService.findAllMarksByStudentId(studentId);
     }
 
