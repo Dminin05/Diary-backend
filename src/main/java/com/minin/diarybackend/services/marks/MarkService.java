@@ -5,6 +5,7 @@ import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AttendanceDto;
 import com.minin.diarybackend.dtos.marks.AvgMark;
 import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
+import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.exceptions.BadRequestException;
 import com.minin.diarybackend.exceptions.ResourceNotFoundException;
 import com.minin.diarybackend.mappers.MarkMapper;
@@ -13,7 +14,6 @@ import com.minin.diarybackend.repositories.MarkRepository;
 import com.minin.diarybackend.services.identity.IIdentityService;
 import com.minin.diarybackend.services.schedule.IScheduleService;
 import com.minin.diarybackend.services.student.IStudentService;
-import com.minin.diarybackend.services.subjects.ISubjectsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,7 +64,7 @@ public class MarkService implements IMarkService {
     }
 
     @Override
-    public Map<String, List<MarkBaseInfo>> findAllMarksByStudentId(UUID studentId) {
+    public List<MarkDto> findAllMarksByStudentId(UUID studentId) {
 
         List<Mark> marks = markRepository.findMarksByStudentId(studentId);
         Map<String, List<MarkBaseInfo>> map = new HashMap<>();
@@ -82,7 +82,11 @@ public class MarkService implements IMarkService {
             map.get(subjectTitle).add(markBaseInfo);
         }
 
-        return map;
+        List<MarkDto> response = map.entrySet().stream()
+                .map(entry -> new MarkDto(entry.getKey(), entry.getValue()))
+                .toList();
+
+        return response;
     }
 
     @Override
@@ -90,7 +94,6 @@ public class MarkService implements IMarkService {
 
         List<Mark> marks = markRepository.findMarksByStudentId(studentId);
         Map<String, AttendanceDto> map = new HashMap<>();
-        List<AttendanceDto> response = new ArrayList<>();
 
         for (Mark mark : marks) {
 
@@ -113,11 +116,13 @@ public class MarkService implements IMarkService {
 
         }
 
-        for (Map.Entry<String, AttendanceDto> entry : map.entrySet()) {
-            AttendanceDto attendanceDto = entry.getValue();
-            attendanceDto.setSubjectName(entry.getKey());
-            response.add(attendanceDto);
-        }
+        List<AttendanceDto> response = map.entrySet().stream()
+                .map(entry ->{
+                    AttendanceDto attendance = entry.getValue();
+                    attendance.setSubjectName(entry.getKey());
+                    return attendance;
+                })
+                .toList();
 
         return response;
     }

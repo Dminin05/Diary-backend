@@ -5,6 +5,7 @@ import com.minin.diarybackend.controllers.marks.requests.MarkUpdateRequest;
 import com.minin.diarybackend.dtos.marks.AttendanceDto;
 import com.minin.diarybackend.dtos.marks.AvgMark;
 import com.minin.diarybackend.dtos.marks.MarkBaseInfo;
+import com.minin.diarybackend.dtos.marks.MarkDto;
 import com.minin.diarybackend.models.Mark;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface IMarkService {
 
     void update(UUID markId, MarkUpdateRequest markUpdateRequest);
 
-    Map<String, List<MarkBaseInfo>> findAllMarksByStudentId(UUID studentId);
+    List<MarkDto> findAllMarksByStudentId(UUID studentId);
 
     AvgMark findAvgMarkByStudentId(UUID studentId);
 
