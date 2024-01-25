@@ -1,0 +1,18 @@
+server:
+  port: 5555
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: core
+          uri: http://localhost:8080
+          predicates:
+            - Path=/core/**
+          filters:
+            - StripPrefix=1
+            - PrefixPath=/
