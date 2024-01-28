@@ -1,5 +1,6 @@
 package com.minin.coreservice.config.security.filters;
 
+import com.minin.coreservice.services.auth.dtos.ClaimsForToken;
 import com.minin.coreservice.utils.JwtTokenUtils;
 import com.minin.custom.CustomPrincipal;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,7 +30,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtTokenUtils jwtTokenUtils;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            @NotNull FilterChain filterChain
+    ) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
         String username = null;
@@ -51,12 +56,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UUID identityId = jwtTokenUtils.getIdentityIdFromAccessToken(authHeader.substring(7));
+            ClaimsForToken claimsForToken = jwtTokenUtils.getCustomClaimsFromAccessToken(authHeader.substring(7));
 
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     new CustomPrincipal(
                             username,
-                            identityId
+                            claimsForToken.getIdentityId(),
+                            claimsForToken.getEmail(),
+                            claimsForToken.isVerified()
                     ),
                     null,
                     jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())

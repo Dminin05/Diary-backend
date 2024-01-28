@@ -1,7 +1,8 @@
 services:
-
-  app:
-    build: .
+  core-service:
+    build:
+      context: core-service
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -10,6 +11,17 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://database_diary:5432/postgres"
       SPRING_DATASOURCE_USERNAME: "postgres"
       SPRING_DATASOURCE_PASSWORD: "postgres"
+    networks:
+      - spring-cloud-network
+
+  gateway-service:
+    build:
+      context: gateway-service
+      dockerfile: Dockerfile
+    ports:
+      - "5555:5555"
+    networks:
+      - spring-cloud-network
 
   database:
     container_name: database_diary
@@ -21,3 +33,9 @@ services:
       POSTGRES_USER: "postgres"
     volumes:
       - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    networks:
+      - spring-cloud-network
+
+networks:
+  spring-cloud-network:
+    driver: bridge
