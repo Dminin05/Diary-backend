@@ -7,6 +7,7 @@ import com.minin.coreservice.controllers.auth.requests.registration.IdentityRegi
 import com.minin.coreservice.controllers.auth.requests.registration.StudentRegisterRequest;
 import com.minin.coreservice.controllers.auth.requests.registration.TeacherRegisterRequest;
 import com.minin.coreservice.controllers.auth.responses.TokenResponse;
+import com.minin.coreservice.services.auth.dtos.ClaimsForToken;
 import com.minin.exceptions.AuthenticationException;
 import com.minin.exceptions.BadRequestException;
 import com.minin.coreservice.models.*;
@@ -61,9 +62,6 @@ public class AuthService implements IAuthService {
     @Transactional
     public TokenResponse register(IdentityRegisterRequest identityCreateRequest) {
 
-        Identity identity = new Identity();
-        String username = "";
-
         if (!isEmail(identityCreateRequest.getEmail())) {
             throw new BadRequestException("invalid_email");
         }
@@ -84,42 +82,49 @@ public class AuthService implements IAuthService {
             case StudentRegisterRequest obj -> {
 
                 String password = passwordEncoder.encode(obj.getPassword());
-
                 Student student = studentService.create(obj);
 
+                Identity identity = new Identity();
                 identity.setStudent(student);
                 identity.setType(IdentityType.STUDENT);
                 identityService.save(identity);
 
                 Credentials credentials = credentialsService.create(obj.getUsername(), password, obj.getEmail(), identity);
-                username = credentials.getUsername();
 
+                UserDetails userDetails = loadUserByUsername(credentials.getUsername());
+                ClaimsForToken claimsForToken = new ClaimsForToken(
+                        identity.getId(),
+                        credentials.getEmail(),
+                        credentials.isEmailVerified()
+                );
+
+                return generateTokens(userDetails, claimsForToken);
             }
             case TeacherRegisterRequest obj -> {
 
                 String password = passwordEncoder.encode(obj.getPassword());
-
                 Teacher teacher = teacherService.create(obj);
 
+                Identity identity = new Identity();
                 identity.setTeacher(teacher);
                 identity.setType(IdentityType.TEACHER);
                 identityService.save(identity);
 
                 Credentials credentials = credentialsService.create(obj.getUsername(), password, obj.getEmail(), identity);
-                username = credentials.getUsername();
 
+                UserDetails userDetails = loadUserByUsername(credentials.getUsername());
+                ClaimsForToken claimsForToken = new ClaimsForToken(
+                        identity.getId(),
+                        credentials.getEmail(),
+                        credentials.isEmailVerified()
+                );
+
+                return generateTokens(userDetails, claimsForToken);
             }
+
             default -> throw new IllegalStateException("Unexpected value: " + identityCreateRequest);
         }
 
-        UserDetails userDetails = loadUserByUsername(username);
-
-        String accessToken = jwtTokenUtils.generateAccessToken(userDetails, identity.getId());
-        String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
-
-        saveNewRefreshToken(refreshToken, userDetails.getUsername());
-
-        return new TokenResponse(accessToken, refreshToken);
     }
 
     @Override
@@ -138,14 +143,14 @@ public class AuthService implements IAuthService {
         }
 
         UserDetails userDetails = loadUserByUsername(authRequest.getUsername());
-        UUID identityId = credentialsService.findByUsername(authRequest.getUsername()).getIdentity().getId();
+        Credentials credentials = credentialsService.findByUsername(authRequest.getUsername());
+        ClaimsForToken claimsForToken = new ClaimsForToken(
+                credentials.getIdentity().getId(),
+                credentials.getEmail(),
+                credentials.isEmailVerified()
+        );
 
-        String accessToken = jwtTokenUtils.generateAccessToken(userDetails, identityId);
-        String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
-
-        saveNewRefreshToken(refreshToken, userDetails.getUsername());
-
-        return new TokenResponse(accessToken, refreshToken);
+        return generateTokens(userDetails, claimsForToken);
     }
 
     @Override
@@ -160,14 +165,14 @@ public class AuthService implements IAuthService {
 
         String username = jwtTokenUtils.getUsernameFromRefreshToken(token);
         UserDetails userDetails = loadUserByUsername(username);
-        UUID identityId = credentialsService.findByUsername(username).getIdentity().getId();
+        Credentials credentials = credentialsService.findByUsername(username);
+        ClaimsForToken claimsForToken = new ClaimsForToken(
+                credentials.getIdentity().getId(),
+                credentials.getEmail(),
+                credentials.isEmailVerified()
+        );
 
-        String newAccessToken = jwtTokenUtils.generateAccessToken(userDetails, identityId);
-        String newRefreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
-
-        saveNewRefreshToken(newRefreshToken, username);
-
-        return new TokenResponse(newAccessToken, newRefreshToken);
+        return generateTokens(userDetails, claimsForToken);
     }
 
     @Override
@@ -196,12 +201,13 @@ public class AuthService implements IAuthService {
 
         UserDetails userDetails = loadUserByUsername(credentials.getUsername());
 
-        String accessToken = jwtTokenUtils.generateAccessToken(userDetails, identityId);
-        String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
+        ClaimsForToken claimsForToken = new ClaimsForToken(
+                credentials.getIdentity().getId(),
+                credentials.getEmail(),
+                credentials.isEmailVerified()
+        );
 
-        saveNewRefreshToken(refreshToken, userDetails.getUsername());
-
-        return new TokenResponse(accessToken, refreshToken);
+        return generateTokens(userDetails, claimsForToken);
     }
 
     @Override
@@ -216,17 +222,6 @@ public class AuthService implements IAuthService {
 
         credentials.setPassword(passwordEncoder.encode(recoveryPasswordRequest.getNewPassword()));
         credentialsService.update(credentials);
-    }
-
-    private void saveNewRefreshToken(String token, String username) {
-
-        Token toSaveToken = tokenRepository.findTokenByUsername(username)
-                .orElse(new Token());
-
-        toSaveToken.setUsername(username);
-        toSaveToken.setValue(token);
-
-        tokenRepository.save(toSaveToken);
     }
 
     @Override
@@ -245,8 +240,29 @@ public class AuthService implements IAuthService {
         );
     }
 
+    private void saveNewRefreshToken(String token, String username) {
+
+        Token toSaveToken = tokenRepository.findTokenByUsername(username)
+                .orElse(new Token());
+
+        toSaveToken.setUsername(username);
+        toSaveToken.setValue(token);
+
+        tokenRepository.save(toSaveToken);
+    }
+
     private boolean isEmail(String s) {
         return patternProperties.getEmailPattern().matcher(s).matches();
+    }
+
+    private TokenResponse generateTokens(UserDetails userDetails, ClaimsForToken claimsForToken) {
+
+        String accessToken = jwtTokenUtils.generateAccessToken(userDetails, claimsForToken);
+        String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
+
+        saveNewRefreshToken(refreshToken, userDetails.getUsername());
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 
 }

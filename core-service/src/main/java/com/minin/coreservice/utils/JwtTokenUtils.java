@@ -1,5 +1,6 @@
 package com.minin.coreservice.utils;
 
+import com.minin.coreservice.services.auth.dtos.ClaimsForToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,7 +30,7 @@ public class JwtTokenUtils {
     @Value("${spring.security.refresh-life-time}")
     private Duration refreshLifeTime;
 
-    public String generateAccessToken(UserDetails userDetails, UUID identityId) {
+    public String generateAccessToken(UserDetails userDetails, ClaimsForToken claimsForToken) {
 
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = userDetails.getAuthorities().stream()
@@ -37,7 +38,7 @@ public class JwtTokenUtils {
                 .toList();
 
         claims.put("roles", roles);
-        claims.put("identityId", identityId);
+        claims.put("claims", claimsForToken);
 
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + lifeTime.toMillis());
@@ -68,10 +69,6 @@ public class JwtTokenUtils {
         return getAllClaimsFromAccessToken(token).getSubject();
     }
 
-    public UUID getIdentityIdFromAccessToken(String token) {
-        return UUID.fromString(getAllClaimsFromAccessToken(token).get("identityId").toString());
-    }
-
     public String getUsernameFromRefreshToken(String token) {
         return getAllClaimsFromRefreshToken(token).getSubject();
     }
@@ -79,6 +76,10 @@ public class JwtTokenUtils {
     public List<String> getRoles(String token) {
         return getAllClaimsFromAccessToken(token)
                 .get("roles", List.class);
+    }
+
+    public ClaimsForToken getCustomClaimsFromAccessToken(String token) {
+        return this.getAllClaimsFromAccessToken(token).get("claims", ClaimsForToken.class);
     }
 
     private Claims getAllClaimsFromAccessToken(String token) {
