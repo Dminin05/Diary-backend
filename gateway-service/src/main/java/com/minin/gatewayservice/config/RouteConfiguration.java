@@ -16,7 +16,7 @@ public class RouteConfiguration {
         return builder.routes()
                 .route("core", r -> r.path("/core/**")
                         .filters(f -> f.filter(authFilter.apply(new CustomGatewayFilter.Config())))
-                        .uri("http://localhost:8080"))
+                        .uri("lb://CORE-SERVICE"))
                 .build();
     }
 

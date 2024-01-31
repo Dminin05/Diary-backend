@@ -3,7 +3,17 @@ server:
   servlet:
     context-path: /core
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka
+  instance:
+    preferIpAddress: true
+
 spring:
+
+  application:
+    name: core-service
 
   datasource:
     driver-class-name: org.postgresql.Driver
