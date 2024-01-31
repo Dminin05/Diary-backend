@@ -1,10 +1,11 @@
-# Diary - электронный дневник для колледжей и университетов
+# Diary - electronic diary for colleges and universities built on microservices.
 
 ## Built With 
 
 - ### Java 21 
 - ### Spring Boot 3
 - ### Spring Data
+- ### Spring cloud
 - ### Spring Security 6
 - ### PostgreSQL
 - ### Docker
@@ -19,8 +20,6 @@
 ```sh
    ./gradlew build
 ```
-### or
-   ![Alt text](src/main/resources/img/gradle_task.png?)
 ### 3. Docker compose
 ```sh
    docker compose up

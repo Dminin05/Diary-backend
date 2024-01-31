@@ -56,14 +56,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            ClaimsForToken claimsForToken = jwtTokenUtils.getCustomClaimsFromAccessToken(authHeader.substring(7));
+            UUID identityId = jwtTokenUtils.getIdentityIdFromAccessToken(authHeader.substring(7));
+            String email = jwtTokenUtils.getEmailFromAccessToken(authHeader.substring(7));
+            boolean isVerified = jwtTokenUtils.getIsVerifiedFromAccessToken(authHeader.substring(7));
 
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     new CustomPrincipal(
                             username,
-                            claimsForToken.getIdentityId(),
-                            claimsForToken.getEmail(),
-                            claimsForToken.isVerified()
+                            identityId,
+                            email,
+                            isVerified
                     ),
                     null,
                     jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())

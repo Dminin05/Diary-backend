@@ -3,16 +3,18 @@ server:
   servlet:
     context-path: /
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka
+  instance:
+    preferIpAddress: true
+
 spring:
   application:
     name: gateway-service
   cloud:
     gateway:
-      routes:
-        - id: core
-          uri: http://localhost:8080
-          predicates:
-            - Path=/core/**
-          filters:
-            - StripPrefix=1
-            - PrefixPath=/
+      discovery:
+        locator:
+          enabled: true

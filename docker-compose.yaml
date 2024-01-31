@@ -1,5 +1,16 @@
 services:
+
+  eureka-service:
+    image: diary-eureka-service:latest
+    container_name: eureka-service
+    build:
+      context: eureka-service
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
   core-service:
+    image: diary-core-service:latest
     build:
       context: core-service
       dockerfile: Dockerfile
@@ -7,21 +18,22 @@ services:
       - "8080:8080"
     depends_on:
       - database
+      - eureka-service
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://database_diary:5432/postgres"
       SPRING_DATASOURCE_USERNAME: "postgres"
       SPRING_DATASOURCE_PASSWORD: "postgres"
-    networks:
-      - spring-cloud-network
 
   gateway-service:
+    image: diary-gateway-service:latest
+    container_name: gateway-service
     build:
       context: gateway-service
       dockerfile: Dockerfile
     ports:
       - "5555:5555"
-    networks:
-      - spring-cloud-network
+    depends_on:
+      - eureka-service
 
   database:
     container_name: database_diary
@@ -33,9 +45,3 @@ services:
       POSTGRES_USER: "postgres"
     volumes:
       - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
-    networks:
-      - spring-cloud-network
-
-networks:
-  spring-cloud-network:
-    driver: bridge

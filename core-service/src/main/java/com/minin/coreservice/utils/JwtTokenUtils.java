@@ -38,7 +38,9 @@ public class JwtTokenUtils {
                 .toList();
 
         claims.put("roles", roles);
-        claims.put("claims", claimsForToken);
+        claims.put("identityId", claimsForToken.getIdentityId());
+        claims.put("email", claimsForToken.getEmail());
+        claims.put("isVerified", claimsForToken.isVerified());
 
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + lifeTime.toMillis());
@@ -78,8 +80,16 @@ public class JwtTokenUtils {
                 .get("roles", List.class);
     }
 
-    public ClaimsForToken getCustomClaimsFromAccessToken(String token) {
-        return this.getAllClaimsFromAccessToken(token).get("claims", ClaimsForToken.class);
+    public UUID getIdentityIdFromAccessToken(String token) {
+        return UUID.fromString(this.getAllClaimsFromAccessToken(token).get("identityId").toString());
+    }
+
+    public String getEmailFromAccessToken(String token) {
+        return this.getAllClaimsFromAccessToken(token).get("email").toString();
+    }
+
+    public boolean getIsVerifiedFromAccessToken(String token) {
+        return this.getAllClaimsFromAccessToken(token).get("isVerified", Boolean.class);
     }
 
     private Claims getAllClaimsFromAccessToken(String token) {
