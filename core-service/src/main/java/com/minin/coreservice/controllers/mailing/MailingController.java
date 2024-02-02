@@ -22,12 +22,12 @@ public class MailingController {
     @PostMapping("email")
     public void sendEmailVerificationCode(Authentication authentication) {
         CustomPrincipal principal = (CustomPrincipal) authentication.getPrincipal();
-        mailingService.sendVerificationCode(principal.getIdentityId());
+        mailingService.sendVerificationCode(principal.getEmail());
     }
 
     @PostMapping
     public void sendVerificationCode(@RequestBody EmailSendRequest emailSendRequest) {
-        mailingService.sendVerificationCode(emailSendRequest);
+        mailingService.sendVerificationCode(emailSendRequest.getEmail());
     }
 
 }

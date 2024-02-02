@@ -9,21 +9,6 @@ services:
     ports:
       - "8761:8761"
 
-  core-service:
-    image: diary-core-service:latest
-    build:
-      context: core-service
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - database
-      - eureka-service
-    environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://database_diary:5432/postgres"
-      SPRING_DATASOURCE_USERNAME: "postgres"
-      SPRING_DATASOURCE_PASSWORD: "postgres"
-
   gateway-service:
     image: diary-gateway-service:latest
     container_name: gateway-service
@@ -35,6 +20,36 @@ services:
     depends_on:
       - eureka-service
 
+  core-service:
+    image: diary-core-service:latest
+    build:
+      context: core-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - eureka-service
+      - zookeeper
+      - kafka
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://database_diary:5432/postgres"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "postgres"
+
+  mail-service:
+    image: diary-mail-service:latest
+    container_name: mail-service
+    build:
+      context: mail-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka-service
+      - zookeeper
+      - kafka
+
   database:
     container_name: database_diary
     image: postgres:latest
@@ -45,3 +60,18 @@ services:
       POSTGRES_USER: "postgres"
     volumes:
       - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181

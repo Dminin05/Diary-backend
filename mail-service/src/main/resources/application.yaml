@@ -1,0 +1,35 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /mail
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka
+  instance:
+    preferIpAddress: true
+
+spring:
+
+  application:
+    name: mail-service
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: "Dm-minin05"
+    password: "tsopuwkiyqqynzuo"
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+    sender:
+      email: "Dm-minin05@yandex.ru"
+      text: "Dm-minin05"

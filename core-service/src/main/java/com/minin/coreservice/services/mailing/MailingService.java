@@ -1,72 +1,30 @@
 package com.minin.coreservice.services.mailing;
 
-import com.minin.coreservice.controllers.mailing.requests.EmailSendRequest;
 import com.minin.coreservice.models.VerificationCode;
 import com.minin.coreservice.services.codes.IVerificationCodeService;
-import com.minin.coreservice.services.credentials.ICredentialsService;
+import com.minin.dtos.mail.SendMailDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.kafka.KafkaException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MailingService implements IMailingService {
 
-    private final JavaMailSender javaMailSender;
-
-    private final ICredentialsService credentialsService;
     private final IVerificationCodeService verificationCodeService;
 
-    @Value("${spring.mail.sender.email}")
-    private String senderEmail;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public void sendVerificationCode(UUID identityId) {
+    public void sendVerificationCode(String email) {
 
-        String email = credentialsService.findByIdentityId(identityId).getEmail();
         String code = generateVerificationCode();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setFrom(senderEmail);
-        message.setTo(email);
-        message.setSubject("Код подтверждения");
-        message.setText(code);
-
         try {
-            javaMailSender.send(message);
-        } catch (MailException ex) {
-            // TODO
-        }
-
-        VerificationCode verificationCode = new VerificationCode();
-        verificationCode.setValue(code);
-        verificationCode.setEmail(email);
-
-        verificationCodeService.create(verificationCode);
-    }
-
-    @Override
-    public void sendVerificationCode(EmailSendRequest emailSendRequest) {
-
-        String email = emailSendRequest.getEmail();
-        String code = generateVerificationCode();
-
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setFrom(senderEmail);
-        message.setTo(email);
-        message.setSubject("Код подтверждения");
-        message.setText(code);
-
-        try {
-            javaMailSender.send(message);
-        } catch (MailException ex) {
+            SendMailDto mail = new SendMailDto(email, "Код подтверждения", code);
+            kafkaTemplate.send("send-mail-topic", mail);
+        } catch (KafkaException e) {
             // TODO
         }
 
