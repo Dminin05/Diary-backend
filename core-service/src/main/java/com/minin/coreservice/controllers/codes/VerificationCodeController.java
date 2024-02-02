@@ -31,7 +31,7 @@ public class VerificationCodeController {
 
         Cookie cookie = new Cookie("credentials_id", credentials.getId().toString());
         cookie.setHttpOnly(true);
-        cookie.setPath("/diary/api/v1/auth/password-recovery");
+        cookie.setPath("/core/api/v1/auth/password-recovery");
         httpResponse.addCookie(cookie);
     }
 
