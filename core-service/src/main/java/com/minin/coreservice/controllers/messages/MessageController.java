@@ -1,7 +1,7 @@
 package com.minin.coreservice.controllers.messages;
 
 import com.minin.coreservice.controllers.messages.requests.MessageRequest;
-import com.minin.dtos.MessageDto;
+import com.minin.dtos.messages.MessageDto;
 import com.minin.coreservice.services.messages.IMessageService;
 import com.minin.custom.CustomPrincipal;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -10,6 +10,16 @@
 - ### PostgreSQL
 - ### Docker
 
+## Architecture
+![Architecture](core-service/src/main/resources/img/diary-backend.png)
+
+## Features
+
+- ### Event-driven architecture
+- ### Send messages with files (with multithreading)
+- ### Storing files in Yandex Object Storage
+- ### Add marks, groups, schedules and etc
+
 ## Getting Started
 
 ### 1. Clone the repository
@@ -24,6 +34,3 @@
 ```sh
    docker compose up
 ```
-
-## Swagger documentation
-#### After start project you may found documentation here -> http://localhost:8080/diary/swagger-ui/index.html

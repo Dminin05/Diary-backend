@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,5 +31,8 @@ public class Message {
 
     @Column(name = "message")
     private String message;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "message")
+    private List<File> files;
 
 }

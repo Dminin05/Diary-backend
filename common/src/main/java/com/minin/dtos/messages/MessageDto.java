@@ -1,6 +1,8 @@
-package com.minin.dtos;
+package com.minin.dtos.messages;
 
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class MessageDto {
@@ -9,5 +11,6 @@ public class MessageDto {
     private String receiverUsername;
     private String title;
     private String message;
+    private List<String> files;
 
 }
