@@ -40,4 +40,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppError(HttpStatus.CONFLICT.value(), ex.getMessage()), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<AppError> handleConversionException(ConversionException ex) {
+        return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 }

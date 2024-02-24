@@ -269,6 +269,20 @@ create table marks
 alter table marks
     owner to postgres;
 
+create table files
+(
+    id         uuid not null
+        constraint files_pk
+            primary key,
+    message_id uuid not null
+        constraint files_messages_id_fk
+            references messages,
+    url        text not null
+);
+
+alter table files
+    owner to postgres;
+
 
 -- add roles
 INSERT INTO public.role (id, name) VALUES ('756ad1c2-5948-452b-b243-ea97cb73435b', 'ROLE_STUDENT');

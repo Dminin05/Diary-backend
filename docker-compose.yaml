@@ -50,6 +50,19 @@ services:
       - zookeeper
       - kafka
 
+  upload-service:
+    image: diary-upload-service:latest
+    container_name: upload-service
+    build:
+      context: upload-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-service
+      - zookeeper
+      - kafka
+
   database:
     container_name: database_diary
     image: postgres:latest

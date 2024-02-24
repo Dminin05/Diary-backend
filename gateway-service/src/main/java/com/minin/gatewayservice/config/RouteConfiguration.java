@@ -17,6 +17,9 @@ public class RouteConfiguration {
                 .route("core", r -> r.path("/core/**")
                         .filters(f -> f.filter(authFilter.apply(new CustomGatewayFilter.Config())))
                         .uri("lb://CORE-SERVICE"))
+                .route("upload", r -> r.path("/upload/**")
+                        .filters(f -> f.filter(authFilter.apply(new CustomGatewayFilter.Config())))
+                        .uri("lb://UPLOAD-SERVICE"))
                 .build();
     }
 

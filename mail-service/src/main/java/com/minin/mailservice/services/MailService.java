@@ -3,6 +3,7 @@ package com.minin.mailservice.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.minin.dtos.mail.SendMailDto;
+import com.minin.exceptions.ConversionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -29,7 +30,7 @@ public class MailService implements IMailService {
         try {
             sendMailDto = objectMapper.readValue(data, SendMailDto.class);
         } catch (JsonProcessingException e) {
-            // TODO
+            throw new ConversionException(e.getMessage());
         }
 
         SimpleMailMessage message = new SimpleMailMessage();
